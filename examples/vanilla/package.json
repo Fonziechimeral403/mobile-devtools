@@ -1,0 +1,19 @@
+{
+  "name": "example-vanilla",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "mobile-devtools": "workspace:*"
+  },
+  "devDependencies": {
+    "@mobile-devtools/tsconfig": "workspace:*",
+    "@mobile-devtools/vite-config": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

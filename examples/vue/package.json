@@ -1,0 +1,22 @@
+{
+  "name": "example-vue",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "mobile-devtools": "workspace:*",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@mobile-devtools/tsconfig": "workspace:*",
+    "@mobile-devtools/vite-config": "workspace:*",
+    "@vitejs/plugin-vue": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

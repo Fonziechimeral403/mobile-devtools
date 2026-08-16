@@ -1,0 +1,8 @@
+{
+  "extends": "@mobile-devtools/tsconfig/react-library.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src"]
+}
