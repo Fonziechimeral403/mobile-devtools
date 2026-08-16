@@ -1,159 +1,245 @@
-# Turborepo starter
+# Mobile DevTools
 
-This Turborepo starter is maintained by the Turborepo core team.
+> **Next-Gen Framework-Agnostic In-App Mobile Debugger & Inspector Overlay for Web Applications**
 
-## Using this example
+[![Bundle Size](https://img.shields.io/badge/Bundle_Size-~2.0_kB_gzipped-10b981.svg)](https://bundlephobia.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6.svg)](https://www.typescriptlang.org/)
+[![Turborepo](https://img.shields.io/badge/Monorepo-Turborepo-ef4444.svg)](https://turbo.build/)
+[![React](https://img.shields.io/badge/Adapter-React_18%2F19-61dafb.svg)](https://react.dev/)
+[![Vue](https://img.shields.io/badge/Adapter-Vue_3-42b883.svg)](https://vuejs.org/)
+[![Vanilla JS](https://img.shields.io/badge/Adapter-Vanilla_JS-f7df1e.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
+## 📌 Table of Contents
+
+- [💡 Motivation & Why Use It?](#-motivation--why-use-it)
+- [✨ Core Capabilities](#-core-capabilities)
+- [🏗️ Technical Architecture](#%EF%B8%8F-technical-architecture)
+- [🚀 Framework Quickstart](#-framework-quickstart)
+  - [⚛️ React Integration](#%EF%B8%8F-react-integration)
+  - [💚 Vue 3 Integration](#-vue-3-integration)
+  - [🍦 Vanilla JS / Legacy Apps](#-vanilla-js--legacy-apps)
+- [⚙️ Full Configuration & Props Reference](#%EF%B8%8F-full-configuration--props-reference)
+- [🎨 Theme Engine & Customization](#-theme-engine--customization)
+- [📂 Monorepo Structure](#-monorepo-structure)
+- [🛠️ Development Setup](#%EF%B8%8F-development-setup)
+- [📄 License](#-license)
+
+---
+
+## 💡 Motivation & Why Use It?
+
+Debugging mobile web applications or QA staging builds on physical smartphones, tablets, or embedded webviews is historically painful:
+
+- ❌ Requiring physical USB debugging cables connected to a desktop computer.
+- ❌ Configuring Safari Remote Inspector or Chrome Inspect ports over local WiFi.
+- ❌ Losing console logs when a mobile browser crashes or refreshes.
+- ❌ Inability to inspect network traffic on production staging environments without desktop proxies (Charles / Fiddler / Proxyman).
+
+**`mobile-devtools`** eliminates these pain points entirely. It embeds a lightweight, high-performance floating badge and overlay drawer directly inside your web application. You can inspect logs, monitor network calls, edit local storage, and inspect device specs anytime, anywhere — directly on screen without external tools or cables.
+
+---
+
+## ✨ Core Capabilities
+
+- ⚡ **Ultra-Lightweight & Fast**: Extremely small footprint (**~2.0 kB gzipped** / **~5.7 kB minified**) with zero runtime dependencies, ensuring zero impact on page load speed or mobile frame rates.
+- 🚀 **Quick Bug Exporter**: Instant 1-click bug report sharing via Web Share API (`navigator.share`) to WhatsApp, Telegram, Slack, AirDrop, or Email with file download and copy fallbacks.
+- 🌐 **Network Throttling Simulator**: Simulate `Slow 3G`, `Fast 3G`, or `Offline` connection modes directly on mobile devices with synthetic latency injection.
+- ⚡ **Cable-Free Mobile Inspection**: Debug directly on physical iOS / Android devices, mobile webviews, or mobile Safari/Chrome.
+- 🛡️ **Shadow DOM Style Isolation**: Rendered inside a Shadow DOM container (`<mobile-devtools-root>`), guaranteeing **zero CSS leaks** into your app's global styles and **zero style pollution** from Tailwind, Bootstrap, or global CSS resets.
+- 📋 **Console Tab**: Real-time capture of `console.log`, `info`, `warn`, `error`, and `debug` with live filter search and unread error badges.
+- 🌐 **Network Tab**: Live interception of `fetch` and `XMLHttpRequest` calls with HTTP status indicators (`200 OK`, `500 Error`), latency timing, request/response headers, and JSON body previews.
+- 💾 **Storage Tab**: Real-time inspector and editor for `localStorage`, `sessionStorage`, and `document.cookie`.
+- 💻 **System Info Tab**: Real-time diagnostic monitor for viewport dimensions, device pixel ratio (DPR), user agent string, memory limit, and screen orientation.
+- 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection, accent color swatches, and custom background palettes.
+- 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, and **Vanilla JS**.
+
+---
+
+## 🏗️ Technical Architecture
+
+```mermaid
+graph TD
+    A["mobile-devtools"] --> B["Core Engine & Store"]
+    A --> C["Shadow DOM UI Engine"]
+    A --> D["Subpath Exports"]
+    D --> E["mobile-devtools (Vanilla JS)"]
+    D --> F["mobile-devtools/react (React)"]
+    D --> G["mobile-devtools/vue (Vue 3)"]
+
+    subgraph Core Features
+        A1[Console Interceptor]
+        A2[Fetch / XHR Interceptor]
+        A3[Storage Listener]
+        A4[DevTools Store & State]
+    end
+
+    subgraph UI Engine
+        B1[Shadow DOM Host]
+        B2[Floating Badge View]
+        B3[Drawer Views & Tabs]
+        B4[Auto Contrast Theme Helper]
+    end
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 🚀 Framework Quickstart
 
-### Apps and Packages
+### 📦 Installation
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+npm install mobile-devtools
+# or
+pnpm add mobile-devtools
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+### ⚛️ React Integration
+
+Import from `mobile-devtools/react`:
+
+```tsx
+import React from 'react';
+import { MobileDevTools } from 'mobile-devtools/react';
+
+export default function App() {
+  return (
+    <>
+      <YourAppRoutes />
+
+      {/* Mobile DevTools Overlay */}
+      <MobileDevTools position="bottom-right" theme={{ mode: 'dark' }} />
+    </>
+  );
+}
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+### 💚 Vue 3 Integration
 
-```sh
-turbo build --filter=docs
+Import from `mobile-devtools/vue`:
+
+```html
+<script setup>
+  import { MobileDevTools } from 'mobile-devtools/vue';
+</script>
+
+<template>
+  <YourAppLayout />
+  <MobileDevTools position="bottom-right" :theme="{ mode: 'dark' }" />
+</template>
 ```
 
-Without global `turbo`:
+---
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+### 🍦 Vanilla JS / Legacy Apps
+
+Import directly from `mobile-devtools`:
+
+```typescript
+import { createMobileDevTools } from 'mobile-devtools';
+
+// Instantiate DevTools overlay
+const devtools = createMobileDevTools({
+  title: 'My App Debugger',
+  position: 'bottom-right',
+  theme: {
+    mode: 'dark',
+    accentColor: '#0070f3',
+  },
+});
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+## ⚙️ Full Configuration & Props Reference
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+Below is the complete reference table for all configuration options supported by `<MobileDevTools />` / `createMobileDevTools()`:
 
-```sh
-cd my-turborepo
-turbo dev
+| Option / Prop               | Type                  | Default                                       | Description                                                                                                                           |
+| :-------------------------- | :-------------------- | :-------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`                     | `string`              | `'DevTools'`                                  | Label shown on floating badge and drawer header                                                                                       |
+| `icon`                      | `string`              | `undefined`                                   | Custom icon (Emoji string like `'⚡'`, Image URL, or Base64 data URI)                                                                 |
+| `position`                  | `BadgePositionPreset` | `'bottom-right'`                              | Initial corner/edge preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'`, `'bottom'`, `'top'`, `'left'`, `'right'`) |
+| `initialTab`                | `DevToolsTabId`       | `'console'`                                   | Default tab opened when drawer is triggered (`'console'`, `'network'`, `'storage'`, `'system'`)                                       |
+| `enabledTabs`               | `DevToolsTabId[]`     | `['console', 'network', 'storage', 'system']` | Filter which tabs are enabled in drawer                                                                                               |
+| `defaultOpen`               | `boolean`             | `false`                                       | Set to `true` to open drawer automatically on mount                                                                                   |
+| `autoSnapBadge`             | `boolean`             | `false`                                       | Enable magnetic snapping of badge to nearest screen edge                                                                              |
+| `theme.mode`                | `'dark' \| 'light'`   | `'dark'`                                      | Theme mode                                                                                                                            |
+| `theme.accentColor`         | `string`              | `undefined`                                   | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
+| `theme.backgroundColor`     | `string`              | `undefined`                                   | Custom background color for drawer and badge                                                                                          |
+| `theme.cardBackgroundColor` | `string`              | `undefined`                                   | Custom background color for inner card elements                                                                                       |
+| `interceptors.maxLogLimit`  | `number`              | `200`                                         | Maximum number of console logs stored in buffer                                                                                       |
+
+---
+
+## 🎨 Theme Engine & Customization
+
+`mobile-devtools` features a built-in theme engine that automatically calculates background brightness to maintain **WCAG AAA readable text contrast**:
+
+```tsx
+<MobileDevTools
+  title="Staging Debugger"
+  icon="🚀"
+  position="bottom-left"
+  theme={{
+    mode: 'dark',
+    accentColor: '#10b981',
+    backgroundColor: '#0c0c0e',
+  }}
+/>
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
+## 📂 Monorepo Structure
+
+```
+react-mobile-devtools/
+├── apps/
+│   └── web/                    # Next-gen React documentation & live playground app
+├── examples/
+│   ├── react/                  # React 19 test harness app (Port 3001)
+│   ├── vue/                    # Vue 3 test harness app (Port 3002)
+│   └── vanilla/                # Vanilla JS test harness app (Port 3003)
+└── packages/
+    ├── mobile-devtools/        # Main unified published npm package (Core + UI + React/Vue/Vanilla Adapters)
+    └── config/
+        ├── eslint/             # Shared ESLint configuration (@mobile-devtools/eslint-config)
+        └── typescript/         # Shared TypeScript configuration (@mobile-devtools/tsconfig)
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+## 🛠️ Development Setup
 
-```sh
-turbo dev --filter=web
+To build and run the project locally:
+
+```bash
+# Clone repository
+git clone https://github.com/user/react-mobile-devtools.git
+cd react-mobile-devtools
+
+# Install dependencies using pnpm
+pnpm install
+
+# Launch all apps & package watchers in dev mode
+pnpm dev
+
+# Type check all 11 monorepo packages
+pnpm check-types
+
+# Build production bundles
+pnpm build
 ```
 
-Without global `turbo`:
+---
 
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+## 📄 License
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Distributed under the **MIT License**. See [LICENSE](./LICENSE) for details.
