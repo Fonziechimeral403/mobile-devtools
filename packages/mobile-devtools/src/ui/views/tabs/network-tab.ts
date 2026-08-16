@@ -1,0 +1,497 @@
+import {
+  copyToClipboard,
+  DevToolsStore,
+  formatDuration,
+  formatTimestamp,
+  generateCurlCommand,
+  generateFullRequestSummary,
+  NetworkRequestEntry,
+} from '../../../core';
+import { renderJsonTree } from '../../components/json-tree';
+import { BACK_ICON, TRASH_ICON } from '../../icons';
+import { highlightJsonSyntax } from '../../utils/json-highlighter';
+
+export class NetworkTabView {
+  private store: DevToolsStore;
+  private container: HTMLElement;
+  private listScrollContainer: HTMLElement | null = null;
+  private clearBtn: HTMLButtonElement | null = null;
+  private searchValue = '';
+  private methodFilter = 'ALL';
+  private selectedReq: NetworkRequestEntry | null = null;
+  private activeDetailTab: 'response' | 'payload' | 'headers' = 'response';
+  private responseViewMode: 'parsed' | 'raw' = 'parsed';
+  private payloadViewMode: 'parsed' | 'raw' = 'parsed';
+
+  constructor(store: DevToolsStore) {
+    this.store = store;
+    this.container = document.createElement('div');
+    this.container.className = 'devtools-tab-content';
+  }
+
+  public render(): HTMLElement {
+    this.container.innerHTML = '';
+
+    if (this.selectedReq) {
+      return this.renderDetailModal(this.selectedReq);
+    }
+
+    // Toolbar
+    const toolbar = document.createElement('div');
+    toolbar.className = 'devtools-toolbar';
+
+    const methodSelect = document.createElement('select');
+    methodSelect.className = 'devtools-select';
+    methodSelect.style.width = '80px';
+    methodSelect.style.minWidth = '80px';
+    methodSelect.innerHTML = `
+      <option value="ALL">ALL</option>
+      <option value="GET">GET</option>
+      <option value="POST">POST</option>
+      <option value="PUT">PUT</option>
+      <option value="DELETE">DELETE</option>
+    `;
+    methodSelect.value = this.methodFilter;
+    methodSelect.addEventListener('change', (e) => {
+      this.methodFilter = (e.target as HTMLSelectElement).value;
+      this.updateList();
+    });
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'devtools-search-input';
+    searchInput.placeholder = 'Filter URL or Status...';
+    searchInput.value = this.searchValue;
+    searchInput.addEventListener('input', (e) => {
+      this.searchValue = (e.target as HTMLInputElement).value;
+      this.updateList();
+    });
+
+    this.clearBtn = document.createElement('button');
+    this.clearBtn.className = 'devtools-btn devtools-btn-danger devtools-btn-icon-only';
+    this.clearBtn.title = 'Clear Network Requests';
+    this.clearBtn.innerHTML = TRASH_ICON;
+    this.clearBtn.addEventListener('click', () => {
+      if (
+        window.confirm(
+          'Are you sure you want to clear all recorded network requests? This action cannot be undone.'
+        )
+      ) {
+        this.store.clearNetworkRequests();
+        this.selectedReq = null;
+        this.render();
+      }
+    });
+
+    const throttlingSelect = document.createElement('select');
+    throttlingSelect.className = 'devtools-select';
+    throttlingSelect.style.width = '115px';
+    throttlingSelect.style.minWidth = '115px';
+    throttlingSelect.title = 'Simulate Network Speed & Offline Mode';
+    throttlingSelect.innerHTML = `
+      <option value="online">🌐 Online</option>
+      <option value="fast-3g">⚡ Fast 3G</option>
+      <option value="slow-3g">🐢 Slow 3G</option>
+      <option value="offline">🚫 Offline</option>
+    `;
+    throttlingSelect.value = this.store.getNetworkThrottling();
+    throttlingSelect.addEventListener('change', (e) => {
+      const val = (e.target as HTMLSelectElement).value as any;
+      this.store.setNetworkThrottling(val);
+    });
+
+    toolbar.appendChild(methodSelect);
+    toolbar.appendChild(throttlingSelect);
+    toolbar.appendChild(searchInput);
+    toolbar.appendChild(this.clearBtn);
+
+    // Scrollable List Container
+    this.listScrollContainer = document.createElement('div');
+    this.listScrollContainer.className = 'devtools-list-scroll';
+
+    this.container.appendChild(toolbar);
+    this.container.appendChild(this.listScrollContainer);
+
+    this.updateList();
+    return this.container;
+  }
+
+  public updateList() {
+    if (!this.listScrollContainer) return;
+    this.listScrollContainer.innerHTML = '';
+
+    const requests = this.store.getNetworkRequests();
+    if (this.clearBtn) {
+      this.clearBtn.disabled = requests.length === 0;
+    }
+    const filtered = requests.filter((req) => {
+      const matchesSearch =
+        !this.searchValue.trim() ||
+        req.url.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+        req.method.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+        String(req.status).includes(this.searchValue);
+
+      const matchesMethod =
+        this.methodFilter === 'ALL' || req.method.toUpperCase() === this.methodFilter.toUpperCase();
+
+      return matchesSearch && matchesMethod;
+    });
+
+    if (filtered.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.textAlign = 'center';
+      empty.style.padding = '32px';
+      empty.style.color = 'var(--dev-text-muted)';
+      empty.style.fontSize = '12px';
+      empty.textContent = 'No network requests recorded yet.';
+      this.listScrollContainer.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach((req) => {
+      const isError = req.status >= 400 || req.errorState === 'error';
+      const isPending = req.status === 0 && !req.errorState;
+
+      const row = document.createElement('div');
+      row.className = 'devtools-network-row';
+      row.addEventListener('click', () => {
+        this.selectedReq = req;
+        this.activeDetailTab = 'response';
+        this.render();
+      });
+
+      const leftGroup = document.createElement('div');
+      leftGroup.style.display = 'flex';
+      leftGroup.style.alignItems = 'center';
+      leftGroup.style.gap = '8px';
+      leftGroup.style.overflow = 'hidden';
+      leftGroup.style.flex = '1';
+
+      const methodPill = document.createElement('span');
+      methodPill.className = `devtools-method-pill ${req.method}`;
+      methodPill.textContent = req.method;
+
+      const urlInfo = document.createElement('div');
+      urlInfo.style.overflow = 'hidden';
+
+      const title = document.createElement('div');
+      title.className = 'devtools-network-title';
+      title.textContent = req.url.split('/').pop() || req.url;
+
+      const fullUrl = document.createElement('div');
+      fullUrl.className = 'devtools-network-url';
+      fullUrl.textContent = req.url;
+
+      urlInfo.appendChild(title);
+      urlInfo.appendChild(fullUrl);
+      leftGroup.appendChild(methodPill);
+      leftGroup.appendChild(urlInfo);
+
+      const rightGroup = document.createElement('div');
+      rightGroup.style.display = 'flex';
+      rightGroup.style.alignItems = 'center';
+      rightGroup.style.gap = '10px';
+      rightGroup.style.flexShrink = '0';
+
+      const statusPill = document.createElement('span');
+      statusPill.className = `devtools-status-pill ${
+        isError ? 'error' : isPending ? 'pending' : 'success'
+      }`;
+      statusPill.textContent = isPending ? 'Pending' : String(req.status || 'Failed');
+
+      const duration = document.createElement('span');
+      duration.style.fontSize = '11px';
+      duration.style.color = 'var(--dev-text-muted)';
+      duration.style.fontFamily = 'var(--dev-font-mono)';
+      duration.textContent = formatDuration(req.duration);
+
+      rightGroup.appendChild(statusPill);
+      rightGroup.appendChild(duration);
+
+      row.appendChild(leftGroup);
+      row.appendChild(rightGroup);
+      this.listScrollContainer!.appendChild(row);
+    });
+  }
+
+  private renderDetailModal(req: NetworkRequestEntry): HTMLElement {
+    this.container.innerHTML = '';
+
+    const modal = document.createElement('div');
+    modal.className = 'devtools-detail-modal';
+
+    // Modal Header Bar
+    const header = document.createElement('div');
+    header.style.padding = '10px 14px';
+    header.style.borderBottom = '1px solid var(--dev-border)';
+    header.style.display = 'flex';
+    header.style.alignItems = 'center';
+    header.style.justifyContent = 'space-between';
+    header.style.background = 'var(--dev-bg)';
+
+    const titleGroup = document.createElement('div');
+    titleGroup.style.display = 'flex';
+    titleGroup.style.alignItems = 'center';
+    titleGroup.style.gap = '8px';
+    titleGroup.style.overflow = 'hidden';
+
+    const backBtn = document.createElement('button');
+    backBtn.className = 'devtools-btn sm devtools-btn-icon-only';
+    backBtn.style.width = '32px';
+    backBtn.style.height = '32px';
+    backBtn.style.minWidth = '32px';
+    backBtn.style.minHeight = '32px';
+    backBtn.style.padding = '0';
+    backBtn.style.display = 'inline-flex';
+    backBtn.style.alignItems = 'center';
+    backBtn.style.justifyContent = 'center';
+    backBtn.style.flexShrink = '0';
+    backBtn.title = 'Back to request list';
+    backBtn.innerHTML = BACK_ICON;
+    backBtn.addEventListener('click', () => {
+      this.selectedReq = null;
+      this.render();
+    });
+
+    const methodPill = document.createElement('span');
+    methodPill.className = `devtools-method-pill ${req.method}`;
+    methodPill.textContent = req.method;
+
+    const urlText = document.createElement('span');
+    urlText.style.fontSize = '13px';
+    urlText.style.fontWeight = '700';
+    urlText.style.overflow = 'hidden';
+    urlText.style.textOverflow = 'ellipsis';
+    urlText.style.color = 'var(--dev-text-bright)';
+    urlText.textContent = req.url.split('/').pop() || req.url;
+
+    titleGroup.appendChild(backBtn);
+    titleGroup.appendChild(methodPill);
+    titleGroup.appendChild(urlText);
+
+    const headerActionGroup = document.createElement('div');
+    headerActionGroup.style.display = 'flex';
+    headerActionGroup.style.alignItems = 'center';
+    headerActionGroup.style.gap = '6px';
+
+    const copyCurlBtn = document.createElement('button');
+    copyCurlBtn.className = 'devtools-btn sm';
+    copyCurlBtn.textContent = 'cURL';
+    copyCurlBtn.addEventListener('click', async () => {
+      const curl = generateCurlCommand(req);
+      const ok = await copyToClipboard(curl);
+      copyCurlBtn.textContent = ok ? '✓ Copied' : 'Failed';
+      setTimeout(() => {
+        copyCurlBtn.textContent = 'cURL';
+      }, 2000);
+    });
+
+    const copyFullReqBtn = document.createElement('button');
+    copyFullReqBtn.className = 'devtools-btn sm';
+    copyFullReqBtn.textContent = 'Copy Request';
+    copyFullReqBtn.addEventListener('click', async () => {
+      const text = generateFullRequestSummary(req);
+      const ok = await copyToClipboard(text);
+      copyFullReqBtn.textContent = ok ? '✓ Copied' : 'Failed';
+      setTimeout(() => {
+        copyFullReqBtn.textContent = 'Copy Request';
+      }, 2000);
+    });
+
+    headerActionGroup.appendChild(copyCurlBtn);
+    headerActionGroup.appendChild(copyFullReqBtn);
+
+    header.appendChild(titleGroup);
+    header.appendChild(headerActionGroup);
+
+    // Meta Info Subheader
+    const metaBar = document.createElement('div');
+    metaBar.style.padding = '8px 14px';
+    metaBar.style.background = 'var(--dev-card-bg)';
+    metaBar.style.fontSize = '11px';
+    metaBar.style.borderBottom = '1px solid var(--dev-border)';
+    metaBar.style.fontFamily = 'var(--dev-font-mono)';
+    metaBar.innerHTML = `
+      <div><strong style="color:var(--dev-text-muted)">URL:</strong> <span style="color:var(--dev-text-bright);word-break:break-all">${req.url}</span></div>
+      <div style="margin-top:4px;">
+        <strong style="color:var(--dev-text-muted)">Status:</strong> <span style="color:var(--dev-text-bright)">${req.status} (${req.statusText})</span> | 
+        <strong style="color:var(--dev-text-muted)">Duration:</strong> <span style="color:var(--dev-text-bright)">${formatDuration(req.duration)}</span> | 
+        <strong style="color:var(--dev-text-muted)">Time:</strong> <span style="color:var(--dev-text-bright)">${formatTimestamp(req.startTime)}</span>
+      </div>
+    `;
+
+    // Tabs Bar (Response / Payload / Headers) + Parsed/Raw inline
+    const tabsBar = document.createElement('div');
+    tabsBar.className = 'devtools-tabs-bar';
+    tabsBar.style.display = 'flex';
+    tabsBar.style.alignItems = 'center';
+    tabsBar.style.justifyContent = 'flex-start';
+    tabsBar.style.gap = '6px';
+
+    const respBtn = document.createElement('button');
+    respBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'response' ? 'active' : ''}`;
+    respBtn.textContent = 'Response';
+    respBtn.addEventListener('click', () => {
+      this.activeDetailTab = 'response';
+      this.render();
+    });
+
+    const payloadBtn = document.createElement('button');
+    payloadBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'payload' ? 'active' : ''}`;
+    payloadBtn.textContent = 'Payload';
+    payloadBtn.addEventListener('click', () => {
+      this.activeDetailTab = 'payload';
+      this.render();
+    });
+
+    const headersBtn = document.createElement('button');
+    headersBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'headers' ? 'active' : ''}`;
+    headersBtn.textContent = 'Headers';
+    headersBtn.addEventListener('click', () => {
+      this.activeDetailTab = 'headers';
+      this.render();
+    });
+
+    tabsBar.appendChild(respBtn);
+    tabsBar.appendChild(payloadBtn);
+    tabsBar.appendChild(headersBtn);
+
+    // Left-aligned Parsed / Raw segmented control & Copy Request button inline
+    if (this.activeDetailTab === 'response' || this.activeDetailTab === 'payload') {
+      const currentMode =
+        this.activeDetailTab === 'response' ? this.responseViewMode : this.payloadViewMode;
+
+      const segmentedControl = document.createElement('div');
+      segmentedControl.className = 'devtools-segmented-control';
+      segmentedControl.style.marginLeft = 'auto';
+
+      const parsedBtn = document.createElement('button');
+      parsedBtn.className = `devtools-segmented-btn ${currentMode === 'parsed' ? 'active' : ''}`;
+      parsedBtn.textContent = 'Parsed';
+      parsedBtn.addEventListener('click', () => {
+        if (this.activeDetailTab === 'response') this.responseViewMode = 'parsed';
+        else this.payloadViewMode = 'parsed';
+        this.render();
+      });
+
+      const rawBtn = document.createElement('button');
+      rawBtn.className = `devtools-segmented-btn ${currentMode === 'raw' ? 'active' : ''}`;
+      rawBtn.textContent = 'Raw';
+      rawBtn.addEventListener('click', () => {
+        if (this.activeDetailTab === 'response') this.responseViewMode = 'raw';
+        else this.payloadViewMode = 'raw';
+        this.render();
+      });
+
+      segmentedControl.appendChild(parsedBtn);
+      segmentedControl.appendChild(rawBtn);
+
+      tabsBar.appendChild(segmentedControl);
+    }
+
+    // Detail Body View Container
+    const bodyContainer = document.createElement('div');
+    bodyContainer.style.flex = '1';
+    bodyContainer.style.display = 'flex';
+    bodyContainer.style.flexDirection = 'column';
+    bodyContainer.style.overflow = 'hidden';
+
+    // Body Content Scroll
+    const bodyScroll = document.createElement('div');
+    bodyScroll.className = 'devtools-list-scroll';
+    bodyScroll.style.padding = '14px';
+
+    if (this.activeDetailTab === 'response') {
+      if (!req.responseBody) {
+        bodyScroll.innerHTML =
+          '<div style="color:var(--dev-text-muted)">No response body available.</div>';
+      } else if (this.responseViewMode === 'parsed') {
+        bodyScroll.appendChild(renderJsonTree(req.responseBody));
+      } else {
+        const rawPre = document.createElement('pre');
+        rawPre.style.margin = '0';
+        rawPre.style.fontFamily = 'var(--dev-font-mono)';
+        rawPre.style.fontSize = '12px';
+        rawPre.style.color = 'var(--dev-text-bright)';
+        rawPre.style.whiteSpace = 'pre-wrap';
+        rawPre.style.wordBreak = 'break-all';
+        rawPre.innerHTML = highlightJsonSyntax(req.responseBody);
+        bodyScroll.appendChild(rawPre);
+      }
+    } else if (this.activeDetailTab === 'payload') {
+      if (!req.requestBody) {
+        bodyScroll.innerHTML =
+          '<div style="color:var(--dev-text-muted)">No request body payload.</div>';
+      } else if (this.payloadViewMode === 'parsed') {
+        bodyScroll.appendChild(renderJsonTree(req.requestBody));
+      } else {
+        const rawPre = document.createElement('pre');
+        rawPre.style.margin = '0';
+        rawPre.style.fontFamily = 'var(--dev-font-mono)';
+        rawPre.style.fontSize = '12px';
+        rawPre.style.color = 'var(--dev-text-bright)';
+        rawPre.style.whiteSpace = 'pre-wrap';
+        rawPre.style.wordBreak = 'break-all';
+        rawPre.innerHTML = highlightJsonSyntax(req.requestBody);
+        bodyScroll.appendChild(rawPre);
+      }
+    } else if (this.activeDetailTab === 'headers') {
+      const headersWrap = document.createElement('div');
+
+      const reqH4 = document.createElement('h4');
+      reqH4.style.color = 'var(--dev-text-bright)';
+      reqH4.style.marginBottom = '8px';
+      reqH4.style.fontSize = '13px';
+      reqH4.textContent = 'Request Headers';
+
+      const reqTable = document.createElement('table');
+      reqTable.className = 'devtools-table';
+      reqTable.style.marginBottom = '20px';
+      reqTable.style.tableLayout = 'fixed';
+      reqTable.style.width = '100%';
+
+      const reqTbody = document.createElement('tbody');
+      Object.entries(req.requestHeaders || {}).forEach(([k, v]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="color:var(--dev-text-muted);font-weight:600;width:35%;word-break:break-word">${k}</td><td style="color:var(--dev-text-bright);word-break:break-all">${v}</td>`;
+        reqTbody.appendChild(tr);
+      });
+      reqTable.appendChild(reqTbody);
+
+      const resH4 = document.createElement('h4');
+      resH4.style.color = 'var(--dev-text-bright)';
+      resH4.style.marginBottom = '8px';
+      resH4.style.fontSize = '13px';
+      resH4.textContent = 'Response Headers';
+
+      const resTable = document.createElement('table');
+      resTable.className = 'devtools-table';
+      resTable.style.tableLayout = 'fixed';
+      resTable.style.width = '100%';
+
+      const resTbody = document.createElement('tbody');
+      Object.entries(req.responseHeaders || {}).forEach(([k, v]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="color:var(--dev-text-muted);font-weight:600;width:35%;word-break:break-word">${k}</td><td style="color:var(--dev-text-bright);word-break:break-all">${v}</td>`;
+        resTbody.appendChild(tr);
+      });
+      resTable.appendChild(resTbody);
+
+      headersWrap.appendChild(reqH4);
+      headersWrap.appendChild(reqTable);
+      headersWrap.appendChild(resH4);
+      headersWrap.appendChild(resTable);
+      bodyScroll.appendChild(headersWrap);
+    }
+
+    bodyContainer.appendChild(bodyScroll);
+
+    modal.appendChild(header);
+    modal.appendChild(metaBar);
+    modal.appendChild(tabsBar);
+    modal.appendChild(bodyContainer);
+
+    this.container.appendChild(modal);
+    return this.container;
+  }
+}
