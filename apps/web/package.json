@@ -4,25 +4,38 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
-    "build": "next build",
-    "start": "next start",
+    "dev": "vite --port 3000",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "lint": "eslint --max-warnings 0",
-    "check-types": "next typegen && tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@repo/ui": "workspace:*",
-    "next": "16.3.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "mobile-devtools": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.31.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router-dom": "^7.3.0",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.15.3",
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2",
+    "@mobile-devtools/eslint-config": "workspace:*",
+    "@mobile-devtools/tsconfig": "workspace:*",
+    "@mobile-devtools/vite-config": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "eslint": "^9.39.1",
-    "typescript": "5.9.2"
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "typescript": "catalog:",
+    "vite": "catalog:"
   }
 }

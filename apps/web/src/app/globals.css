@@ -1,0 +1,173 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces & Backgrounds - Light */
+  --dev-bg-100: #ffffff;
+  --dev-bg-200: #f8fafc;
+  --dev-bg-300: #f1f5f9;
+
+  /* Borders & Dividers - Light */
+  --dev-border: #e2e8f0;
+  --dev-border-subtle: #f1f5f9;
+
+  /* Typography - Light */
+  --dev-text-bright: #09090b;
+  --dev-text-main: #18181b;
+  --dev-text-muted: #64748b;
+  --dev-text-subtle: #94a3b8;
+
+  /* Syntax Highlighting - Light */
+  --syntax-keyword: #d91b5c;
+  --syntax-function: #0284c7;
+  --syntax-string: #0d9488;
+  --syntax-parameter: #d97706;
+  --syntax-comment: #64748b;
+  --syntax-constant: #09090b;
+
+  /* Status Colors - Light */
+  --status-error-bg: #fef2f2;
+  --status-error-border: #fecaca;
+  --status-error-text: #dc2626;
+
+  --status-warn-bg: #fffbeb;
+  --status-warn-border: #fde68a;
+  --status-warn-text: #d97706;
+
+  --status-info-bg: #f0f9ff;
+  --status-info-border: #bae6fd;
+  --status-info-text: #0284c7;
+
+  --status-success-bg: #f0fdf4;
+  --status-success-border: #bbf7d0;
+  --status-success-text: #16a34a;
+
+  --dev-accent-blue: #0070f3;
+
+  /* Background Radial Gradients - Light */
+  --radial-bg-1: rgba(0, 112, 243, 0.08);
+  --radial-bg-2: rgba(142, 99, 210, 0.05);
+  --radial-bg-3: rgba(10, 197, 178, 0.05);
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* Surfaces & Backgrounds - Dark */
+  --dev-bg-100: #0a0a0a;
+  --dev-bg-200: #000000;
+  --dev-bg-300: #1a1a1a;
+
+  /* Borders & Dividers - Dark */
+  --dev-border: #2e2e2e;
+  --dev-border-subtle: #1f1f1f;
+
+  /* Typography - Dark */
+  --dev-text-bright: #fafafa;
+  --dev-text-main: #ededed;
+  --dev-text-muted: #a0a0a0;
+  --dev-text-subtle: #878787;
+
+  /* Syntax Highlighting - Dark */
+  --syntax-keyword: #f76e99;
+  --syntax-function: #52a9ff;
+  --syntax-string: #0ac5b2;
+  --syntax-parameter: #f1a10d;
+  --syntax-comment: #a0a0a0;
+  --syntax-constant: #ededed;
+
+  /* Status Colors - Dark */
+  --status-error-bg: #2a1314;
+  --status-error-border: #671e22;
+  --status-error-text: #ff6369;
+
+  --status-warn-bg: #271700;
+  --status-warn-border: #573300;
+  --status-warn-text: #f1a10d;
+
+  --status-info-bg: #0f1b2d;
+  --status-info-border: #0d3868;
+  --status-info-text: #52a9ff;
+
+  --status-success-bg: #0b2211;
+  --status-success-border: #0c461b;
+  --status-success-text: #63c174;
+
+  --dev-accent-blue: #0070f3;
+
+  /* Background Radial Gradients - Dark */
+  --radial-bg-1: rgba(0, 112, 243, 0.16);
+  --radial-bg-2: rgba(142, 99, 210, 0.08);
+  --radial-bg-3: rgba(10, 197, 178, 0.06);
+}
+
+@theme {
+  --color-dev-bg-100: var(--dev-bg-100);
+  --color-dev-bg-200: var(--dev-bg-200);
+  --color-dev-bg-300: var(--dev-bg-300);
+
+  --color-dev-border: var(--dev-border);
+  --color-dev-border-subtle: var(--dev-border-subtle);
+
+  --color-dev-text-bright: var(--dev-text-bright);
+  --color-dev-text-main: var(--dev-text-main);
+  --color-dev-text-muted: var(--dev-text-muted);
+  --color-dev-text-subtle: var(--dev-text-subtle);
+
+  --color-syntax-keyword: var(--syntax-keyword);
+  --color-syntax-function: var(--syntax-function);
+  --color-syntax-string: var(--syntax-string);
+  --color-syntax-parameter: var(--syntax-parameter);
+  --color-syntax-comment: var(--syntax-comment);
+  --color-syntax-constant: var(--syntax-constant);
+
+  --color-status-error-bg: var(--status-error-bg);
+  --color-status-error-border: var(--status-error-border);
+  --color-status-error-text: var(--status-error-text);
+
+  --color-status-warn-bg: var(--status-warn-bg);
+  --color-status-warn-border: var(--status-warn-border);
+  --color-status-warn-text: var(--status-warn-text);
+
+  --color-status-info-bg: var(--status-info-bg);
+  --color-status-info-border: var(--status-info-border);
+  --color-status-info-text: var(--status-info-text);
+
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-success-border: var(--status-success-border);
+  --color-status-success-text: var(--status-success-text);
+
+  --color-dev-accent-blue: var(--dev-accent-blue);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  max-width: 100vw;
+  min-height: 100vh;
+  overflow-x: clip;
+  background-color: var(--dev-bg-200);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--radial-bg-1), transparent 70%),
+    radial-gradient(circle 600px at 85% 20%, var(--radial-bg-2), transparent 70%),
+    radial-gradient(circle 500px at 15% 60%, var(--radial-bg-3), transparent 60%);
+  background-attachment: fixed;
+  color: var(--dev-text-main);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
