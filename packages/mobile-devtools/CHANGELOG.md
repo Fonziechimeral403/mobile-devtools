@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.2] - 2026-08-17
+
+### 🚀 Web App & Documentation Enhancements
+
+#### Added
+- **UI Showcase**: Added high-resolution screenshots for Console, Network, Elements, Storage, and System Info tabs in `README.md`.
+- **Shared URL Constants**: Centralized project URLs (`SITE`, `GITHUB`, `NPM`) in `@/shared/constants` for consistent consumer navigation.
+- **`robots.txt`**: Added `robots.txt` with Sitemap reference for web application SEO.
+
+#### Fixed & Improved
+- **Cloudflare Deployment**: Resolved asset upload infinite redirect loop by removing redundant `_redirects` file and switching build script to Node 24 support.
+- **Dynamic Versioning**: Replaced hardcoded version strings in Web UI footer with dynamic `VERSION` import from `mobile-devtools`.
+- **Git & Build Hygiene**: Ignored `.wrangler` state directory in `.gitignore` and untracked build artifacts.
+
+---
+
+## [1.0.1] - 2026-08-17
+
+### 🎨 Theme Support & Documentation Polish
+
+#### Added
+- **npm Compatibility**: Replaced Mermaid diagram in package `README.md` with ASCII architecture diagrams for clean rendering on npmjs.com package page.
+- **Theme Color Synchronization**: Added mobile status bar meta theme color syncing (`#090d16`) in web portal application.
+- **Monorepo Build Pipelines**: Added prebuild script to automatically build `mobile-devtools` package before web app build step.
+
+---
+
 ## [1.0.0] - 2026-08-17
 
 ### 🎉 Initial Public Release
