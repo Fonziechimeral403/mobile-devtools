@@ -4,17 +4,15 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "mobile-devtools-web",
+  "name": "mobile-devtools",
   "main": "worker/index.ts",
   "compatibility_date": "2026-08-05",
   "assets": {
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
   },
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "upload_source_maps": true,
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  "compatibility_flags": ["nodejs_compat"],
 }
