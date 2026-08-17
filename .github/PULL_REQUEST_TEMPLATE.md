@@ -15,8 +15,6 @@ Select the type of change that best describes this PR:
 
 Provide a concise summary of the changes introduced in this PR and the problem/user story it resolves.
 
-> **Why is this change required? What problem does it solve?**
-
 ---
 
 ## ✨ Key Changes & Highlights
@@ -29,8 +27,8 @@ Provide a concise summary of the changes introduced in this PR and the problem/u
 
 ## 📸 Screenshots / Demos (If Applicable)
 
-| Feature | Preview |
-| :--- | :---: |
+| Feature       |                   Preview                   |
+| :------------ | :-----------------------------------------: |
 | **Feature 1** | <!-- Embed screenshot URL or image HTML --> |
 | **Feature 2** | <!-- Embed screenshot URL or image HTML --> |
 
