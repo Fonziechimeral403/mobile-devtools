@@ -7,6 +7,7 @@ import {
   REFRESH_ICON,
   TRASH_ICON,
 } from '../../icons';
+import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
 type ElementsSubTab = 'tree' | 'styles' | 'attributes';
 
@@ -162,6 +163,7 @@ export class ElementsTabView {
     const viewContainer = document.createElement('div');
     viewContainer.className = 'devtools-list-scroll devtools-elements-view';
     viewContainer.id = 'devtools-elements-content';
+    setupScrollLockGuard(viewContainer);
 
     this.container.appendChild(toolbar);
     this.container.appendChild(breadcrumbBar);

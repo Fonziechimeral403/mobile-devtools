@@ -266,6 +266,8 @@ export const SHADOW_STYLES = `
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overscroll-behavior: contain;
+  touch-action: none;
 }
 
 .devtools-drawer-overlay.open {
@@ -293,6 +295,9 @@ export const SHADOW_STYLES = `
   will-change: transform;
   visibility: hidden;
   pointer-events: none;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .devtools-drawer.open {
@@ -338,6 +343,13 @@ export const SHADOW_STYLES = `
   padding: 8px 14px;
   background: var(--dev-bg);
   border-bottom: 1px solid var(--dev-border);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.devtools-header:active {
+  cursor: grabbing;
 }
 
 .devtools-title-group {
@@ -345,6 +357,14 @@ export const SHADOW_STYLES = `
   align-items: center;
   gap: 8px;
   overflow: hidden;
+  cursor: grab;
+}
+
+.devtools-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
 }
 
 .devtools-logo-icon {

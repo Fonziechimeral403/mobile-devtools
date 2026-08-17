@@ -2,7 +2,10 @@ import { defineComponent, onMounted, onUnmounted, PropType, watch } from 'vue';
 import { DevToolsConfig, DevToolsStore } from '../../core';
 import { MobileDevToolsEngine } from '../../ui';
 
-export function useMobileDevTools(config?: DevToolsConfig) {
+export function useMobileDevTools(config?: DevToolsConfig): {
+  getEngine: () => MobileDevToolsEngine | null;
+  getStore: () => DevToolsStore | undefined;
+} {
   let engine: MobileDevToolsEngine | null = null;
 
   onMounted(() => {

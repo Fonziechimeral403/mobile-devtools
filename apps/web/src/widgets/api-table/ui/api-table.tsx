@@ -386,7 +386,7 @@ export const ApiTable: React.FC = () => {
     id: 'analytics',
     title: 'Analytics',
     render: (container) => {
-      container.innerHTML = '<div style="padding:16px">📊 Custom Analytics Tab</div>';
+      container.innerHTML = '<div>Analytics</div>';
     }
   }
 ]`}

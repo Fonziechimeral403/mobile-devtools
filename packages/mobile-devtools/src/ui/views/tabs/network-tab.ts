@@ -5,11 +5,14 @@ import {
   formatTimestamp,
   generateCurlCommand,
   generateFullRequestSummary,
+  HTTP_METHODS,
+  NETWORK_THROTTLING,
   NetworkRequestEntry,
 } from '../../../core';
 import { renderJsonTree } from '../../components/json-tree';
 import { BACK_ICON, TRASH_ICON } from '../../icons';
 import { highlightJsonSyntax } from '../../utils/json-highlighter';
+import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
 export class NetworkTabView {
   private store: DevToolsStore;
@@ -46,10 +49,10 @@ export class NetworkTabView {
     methodSelect.style.minWidth = '80px';
     methodSelect.innerHTML = `
       <option value="ALL">ALL</option>
-      <option value="GET">GET</option>
-      <option value="POST">POST</option>
-      <option value="PUT">PUT</option>
-      <option value="DELETE">DELETE</option>
+      <option value="${HTTP_METHODS.GET}">GET</option>
+      <option value="${HTTP_METHODS.POST}">POST</option>
+      <option value="${HTTP_METHODS.PUT}">PUT</option>
+      <option value="${HTTP_METHODS.DELETE}">DELETE</option>
     `;
     methodSelect.value = this.methodFilter;
     methodSelect.addEventListener('change', (e) => {
@@ -89,10 +92,10 @@ export class NetworkTabView {
     throttlingSelect.style.minWidth = '115px';
     throttlingSelect.title = 'Simulate Network Speed & Offline Mode';
     throttlingSelect.innerHTML = `
-      <option value="online">🌐 Online</option>
-      <option value="fast-3g">⚡ Fast 3G</option>
-      <option value="slow-3g">🐢 Slow 3G</option>
-      <option value="offline">🚫 Offline</option>
+      <option value="${NETWORK_THROTTLING.ONLINE}">🌐 Online</option>
+      <option value="${NETWORK_THROTTLING.FAST_3G}">⚡ Fast 3G</option>
+      <option value="${NETWORK_THROTTLING.SLOW_3G}">🐢 Slow 3G</option>
+      <option value="${NETWORK_THROTTLING.OFFLINE}">🚫 Offline</option>
     `;
     throttlingSelect.value = this.store.getNetworkThrottling();
     throttlingSelect.addEventListener('change', (e) => {
@@ -108,6 +111,7 @@ export class NetworkTabView {
     // Scrollable List Container
     this.listScrollContainer = document.createElement('div');
     this.listScrollContainer.className = 'devtools-list-scroll';
+    setupScrollLockGuard(this.listScrollContainer);
 
     this.container.appendChild(toolbar);
     this.container.appendChild(this.listScrollContainer);
@@ -193,10 +197,15 @@ export class NetworkTabView {
       rightGroup.style.gap = '10px';
       rightGroup.style.flexShrink = '0';
 
+      let statusClass = 'success';
+      if (isError) {
+        statusClass = 'error';
+      } else if (isPending) {
+        statusClass = 'pending';
+      }
+
       const statusPill = document.createElement('span');
-      statusPill.className = `devtools-status-pill ${
-        isError ? 'error' : isPending ? 'pending' : 'success'
-      }`;
+      statusPill.className = `devtools-status-pill ${statusClass}`;
       statusPill.textContent = isPending ? 'Pending' : String(req.status || 'Failed');
 
       const duration = document.createElement('span');
@@ -400,6 +409,7 @@ export class NetworkTabView {
     const bodyScroll = document.createElement('div');
     bodyScroll.className = 'devtools-list-scroll';
     bodyScroll.style.padding = '14px';
+    setupScrollLockGuard(bodyScroll);
 
     if (this.activeDetailTab === 'response') {
       if (!req.responseBody) {

@@ -2,6 +2,8 @@ import { DevToolsStore, formatTimestamp, LOG_LEVELS } from '../../../core';
 import { renderJsonTree } from '../../components/json-tree';
 import { TRASH_ICON } from '../../icons';
 
+import { setupScrollLockGuard } from '../../utils/scroll-lock';
+
 export class ConsoleTabView {
   private store: DevToolsStore;
   private container: HTMLElement;
@@ -70,6 +72,7 @@ export class ConsoleTabView {
     // Scrollable List Container
     this.listScrollContainer = document.createElement('div');
     this.listScrollContainer.className = 'devtools-list-scroll';
+    setupScrollLockGuard(this.listScrollContainer);
 
     this.container.appendChild(toolbar);
     this.container.appendChild(this.listScrollContainer);
@@ -124,10 +127,15 @@ export class ConsoleTabView {
       const filePath = document.createElement('div');
       filePath.className = 'devtools-file-path';
 
+      let statusClass = 'success';
+      if (log.level === LOG_LEVELS.ERROR) {
+        statusClass = 'error';
+      } else if (log.level === LOG_LEVELS.WARN) {
+        statusClass = 'pending';
+      }
+
       const levelPill = document.createElement('span');
-      levelPill.className = `devtools-status-pill ${
-        log.level === LOG_LEVELS.ERROR ? 'error' : log.level === LOG_LEVELS.WARN ? 'pending' : 'success'
-      }`;
+      levelPill.className = `devtools-status-pill ${statusClass}`;
       levelPill.textContent = log.level.toUpperCase();
 
       const timeSpan = document.createElement('span');

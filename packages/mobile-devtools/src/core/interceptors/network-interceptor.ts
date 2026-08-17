@@ -1,3 +1,4 @@
+import { NETWORK_STATUS, NETWORK_THROTTLING, NETWORK_TYPES } from '../constants';
 import { DevToolsStore } from '../stores/devtools-store';
 import { NetworkRequestEntry } from '../types/network';
 import { isServer } from '../utils/env';
@@ -33,9 +34,19 @@ export class NetworkInterceptor {
       const startTime = Date.now();
       const id = `${startTime}-${Math.random().toString(36).substring(2, 9)}`;
 
-      let url =
-        typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
-      let method = init?.method || (input instanceof Request ? input.method : 'GET');
+      let url = '';
+      if (typeof input === 'string') {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.toString();
+      } else {
+        url = input.url;
+      }
+
+      let method = init?.method;
+      if (!method) {
+        method = input instanceof Request ? input.method : 'GET';
+      }
 
       const reqHeaders: Record<string, string> = {};
       if (init?.headers) {
@@ -69,20 +80,20 @@ export class NetworkInterceptor {
         method: method.toUpperCase(),
         status: 0,
         statusText: 'Pending',
-        type: 'fetch',
+        type: NETWORK_TYPES.FETCH,
         startTime,
         requestHeaders: maskedReqHeaders,
         requestBody: maskedReqBody,
         responseHeaders: {},
         responseBody: null,
-        errorState: 'pending',
+        errorState: NETWORK_STATUS.PENDING,
       };
 
       this.store.addNetworkRequest(entry);
 
       const throttling = this.store.getNetworkThrottling();
 
-      if (throttling === 'offline') {
+      if (throttling === NETWORK_THROTTLING.OFFLINE) {
         const endTime = Date.now();
         const offlineErr = new TypeError('Failed to fetch (Simulated Offline Mode)');
         this.store.updateNetworkRequest(id, {
@@ -96,9 +107,9 @@ export class NetworkInterceptor {
         throw offlineErr;
       }
 
-      if (throttling === 'slow-3g') {
+      if (throttling === NETWORK_THROTTLING.SLOW_3G) {
         await new Promise((resolve) => setTimeout(resolve, 500));
-      } else if (throttling === 'fast-3g') {
+      } else if (throttling === NETWORK_THROTTLING.FAST_3G) {
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
 

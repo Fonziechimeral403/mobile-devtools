@@ -35,18 +35,19 @@ export function generateCurlCommand(req: NetworkRequestEntry): string {
   return curl;
 }
 
-export function generateFullRequestSummary(req: NetworkRequestEntry): string {
-  const payloadStr = req.requestBody
-    ? typeof req.requestBody === 'object'
-      ? JSON.stringify(req.requestBody, null, 2)
-      : String(req.requestBody)
-    : 'None';
+function formatBodySummary(body: unknown): string {
+  if (body === undefined || body === null || body === '') {
+    return 'None';
+  }
+  if (typeof body === 'object') {
+    return JSON.stringify(body, null, 2);
+  }
+  return String(body);
+}
 
-  const responseStr = req.responseBody
-    ? typeof req.responseBody === 'object'
-      ? JSON.stringify(req.responseBody, null, 2)
-      : String(req.responseBody)
-    : 'None';
+export function generateFullRequestSummary(req: NetworkRequestEntry): string {
+  const payloadStr = formatBodySummary(req.requestBody);
+  const responseStr = formatBodySummary(req.responseBody);
 
   const reqHeadersStr =
     Object.entries(req.requestHeaders || {})

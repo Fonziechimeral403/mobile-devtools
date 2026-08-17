@@ -21,11 +21,37 @@ export const NETWORK_TYPES = {
   XHR: 'xhr',
 } as const;
 
+export type NetworkRequestType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
+
+export const HTTP_METHODS = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+  PATCH: 'PATCH',
+  HEAD: 'HEAD',
+  OPTIONS: 'OPTIONS',
+} as const;
+
+export type HttpMethod = (typeof HTTP_METHODS)[keyof typeof HTTP_METHODS];
+
 export const NETWORK_STATUS = {
   PENDING: 'pending',
   SUCCESS: 'success',
   ERROR: 'error',
 } as const;
+
+export type NetworkStatus = (typeof NETWORK_STATUS)[keyof typeof NETWORK_STATUS];
+
+export const NETWORK_THROTTLING = {
+  ONLINE: 'online',
+  FAST_3G: 'fast-3g',
+  SLOW_3G: 'slow-3g',
+  OFFLINE: 'offline',
+} as const;
+
+export type NetworkThrottlingProfile =
+  (typeof NETWORK_THROTTLING)[keyof typeof NETWORK_THROTTLING];
 
 export const STORAGE_TYPES = {
   LOCAL_STORAGE: 'localStorage',
