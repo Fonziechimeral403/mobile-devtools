@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Smartphone, ShieldCheck, ExternalLink } from 'lucide-react';
 import { GithubIcon } from '@/shared/ui/icons/github-icon';
 import { URLS } from '@/shared/constants';
+import { VERSION } from 'mobile-devtools';
 
 export const Footer: React.FC = () => {
   return (
@@ -21,7 +22,7 @@ export const Footer: React.FC = () => {
                 mobile-devtools
               </span>
               <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-dev-bg-300 border border-dev-border text-dev-text-muted">
-                v1.0.0
+                v{VERSION}
               </span>
             </div>
             <p className="text-xs sm:text-sm text-dev-text-muted max-w-md leading-relaxed">
