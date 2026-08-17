@@ -1,7 +1,6 @@
 import { DevToolsStore, formatTimestamp, LOG_LEVELS } from '../../../core';
 import { renderJsonTree } from '../../components/json-tree';
 import { TRASH_ICON } from '../../icons';
-
 import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
 export class ConsoleTabView {
@@ -11,6 +10,8 @@ export class ConsoleTabView {
   private clearBtn: HTMLButtonElement | null = null;
   private searchValue = '';
   private levelFilter: string = 'all';
+  private savedScrollTop = 0;
+  private isScrolledToBottom = true;
 
   constructor(store: DevToolsStore) {
     this.store = store;
@@ -73,6 +74,16 @@ export class ConsoleTabView {
     this.listScrollContainer = document.createElement('div');
     this.listScrollContainer.className = 'devtools-list-scroll';
     setupScrollLockGuard(this.listScrollContainer);
+    this.listScrollContainer.addEventListener('scroll', () => {
+      if (!this.listScrollContainer) return;
+      const isAtBottom =
+        this.listScrollContainer.scrollHeight -
+          this.listScrollContainer.scrollTop -
+          this.listScrollContainer.clientHeight <
+        40;
+      this.isScrolledToBottom = isAtBottom;
+      this.savedScrollTop = this.listScrollContainer.scrollTop;
+    });
 
     this.container.appendChild(toolbar);
     this.container.appendChild(this.listScrollContainer);
@@ -83,6 +94,8 @@ export class ConsoleTabView {
 
   public updateList() {
     if (!this.listScrollContainer) return;
+    const prevScrollTop = this.savedScrollTop;
+    const shouldScrollToBottom = this.isScrolledToBottom;
     this.listScrollContainer.innerHTML = '';
 
     const logs = this.store.getLogs();
@@ -158,6 +171,16 @@ export class ConsoleTabView {
       card.appendChild(header);
       card.appendChild(content);
       this.listScrollContainer!.appendChild(card);
+    });
+
+    requestAnimationFrame(() => {
+      if (this.listScrollContainer) {
+        if (shouldScrollToBottom) {
+          this.listScrollContainer.scrollTop = this.listScrollContainer.scrollHeight;
+        } else {
+          this.listScrollContainer.scrollTop = prevScrollTop;
+        }
+      }
     });
   }
 }

@@ -1,6 +1,7 @@
 import { DevToolsStore } from '../stores/devtools-store';
 import { LogLevel } from '../types/log';
 import { isServer } from '../utils/env';
+import { generateId } from '../utils/id';
 
 export class ConsoleInterceptor {
   private originalMethods: Partial<Record<LogLevel, (...args: any[]) => void>> = {};
@@ -66,7 +67,7 @@ export class ConsoleInterceptor {
     const processedArgs = args.map((arg) => this.serializeArg(arg));
 
     this.store.addLog({
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: generateId('log'),
       level,
       args: processedArgs,
       timestamp: Date.now(),

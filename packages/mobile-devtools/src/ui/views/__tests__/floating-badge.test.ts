@@ -43,4 +43,10 @@ describe('FloatingBadgeView', () => {
     const el = badgeView.render();
     expect(el.style.opacity).toBe('0.8');
   });
+
+  it('should hide badge element when showBadge is false', () => {
+    store.updateConfig({ showBadge: false });
+    const el = badgeView.render();
+    expect(el.style.display).toBe('none');
+  });
 });

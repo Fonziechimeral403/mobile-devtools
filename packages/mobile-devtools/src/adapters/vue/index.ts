@@ -39,7 +39,6 @@ export const MobileDevTools = defineComponent({
     enabledTabs: { type: Array as PropType<DevToolsConfig['enabledTabs']>, default: undefined },
     autoSnapBadge: { type: Boolean as PropType<boolean>, default: undefined },
     styles: { type: Object as PropType<DevToolsConfig['styles']>, default: undefined },
-    badgeStyle: { type: Object as PropType<DevToolsConfig['badgeStyle']>, default: undefined },
     interceptors: { type: Object as PropType<DevToolsConfig['interceptors']>, default: undefined },
   },
   setup(props) {

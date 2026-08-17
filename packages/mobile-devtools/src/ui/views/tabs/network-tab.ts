@@ -1,6 +1,7 @@
 import {
   copyToClipboard,
   DevToolsStore,
+  formatCount,
   formatDuration,
   formatTimestamp,
   generateCurlCommand,
@@ -22,9 +23,14 @@ export class NetworkTabView {
   private searchValue = '';
   private methodFilter = 'ALL';
   private selectedReq: NetworkRequestEntry | null = null;
-  private activeDetailTab: 'response' | 'payload' | 'headers' = 'response';
+  private activeDetailTab: 'response' | 'payload' | 'headers' | 'frames' = 'response';
   private responseViewMode: 'parsed' | 'raw' = 'parsed';
   private payloadViewMode: 'parsed' | 'raw' = 'parsed';
+  private detailScrollTop = 0;
+  private detailScrollLeft = 0;
+  private isDetailScrolledToBottom = true;
+  private mainListScrollTop = 0;
+  private subTabsScrollLeft = 0;
 
   constructor(store: DevToolsStore) {
     this.store = store;
@@ -36,7 +42,11 @@ export class NetworkTabView {
     this.container.innerHTML = '';
 
     if (this.selectedReq) {
-      return this.renderDetailModal(this.selectedReq);
+      const freshReq =
+        this.store.getNetworkRequests().find((r) => r.id === this.selectedReq!.id) ||
+        this.selectedReq;
+      this.selectedReq = freshReq;
+      return this.renderDetailModal(freshReq);
     }
 
     // Toolbar
@@ -53,6 +63,8 @@ export class NetworkTabView {
       <option value="${HTTP_METHODS.POST}">POST</option>
       <option value="${HTTP_METHODS.PUT}">PUT</option>
       <option value="${HTTP_METHODS.DELETE}">DELETE</option>
+      <option value="WS">WS</option>
+      <option value="SSE">SSE</option>
     `;
     methodSelect.value = this.methodFilter;
     methodSelect.addEventListener('change', (e) => {
@@ -112,6 +124,11 @@ export class NetworkTabView {
     this.listScrollContainer = document.createElement('div');
     this.listScrollContainer.className = 'devtools-list-scroll';
     setupScrollLockGuard(this.listScrollContainer);
+    this.listScrollContainer.addEventListener('scroll', () => {
+      if (this.listScrollContainer) {
+        this.mainListScrollTop = this.listScrollContainer.scrollTop;
+      }
+    });
 
     this.container.appendChild(toolbar);
     this.container.appendChild(this.listScrollContainer);
@@ -122,6 +139,7 @@ export class NetworkTabView {
 
   public updateList() {
     if (!this.listScrollContainer) return;
+    const prevScrollTop = this.mainListScrollTop;
     this.listScrollContainer.innerHTML = '';
 
     const requests = this.store.getNetworkRequests();
@@ -161,6 +179,8 @@ export class NetworkTabView {
       row.addEventListener('click', () => {
         this.selectedReq = req;
         this.activeDetailTab = 'response';
+        this.detailScrollTop = 0;
+        this.isDetailScrolledToBottom = true;
         this.render();
       });
 
@@ -220,6 +240,12 @@ export class NetworkTabView {
       row.appendChild(leftGroup);
       row.appendChild(rightGroup);
       this.listScrollContainer!.appendChild(row);
+    });
+
+    requestAnimationFrame(() => {
+      if (this.listScrollContainer) {
+        this.listScrollContainer.scrollTop = prevScrollTop;
+      }
     });
   }
 
@@ -330,12 +356,18 @@ export class NetworkTabView {
     `;
 
     // Tabs Bar (Response / Payload / Headers) + Parsed/Raw inline
+    const prevSubTabsScrollLeft = this.subTabsScrollLeft;
     const tabsBar = document.createElement('div');
     tabsBar.className = 'devtools-tabs-bar';
     tabsBar.style.display = 'flex';
     tabsBar.style.alignItems = 'center';
     tabsBar.style.justifyContent = 'flex-start';
     tabsBar.style.gap = '6px';
+    setupScrollLockGuard(tabsBar);
+
+    tabsBar.addEventListener('scroll', () => {
+      this.subTabsScrollLeft = tabsBar.scrollLeft;
+    });
 
     const respBtn = document.createElement('button');
     respBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'response' ? 'active' : ''}`;
@@ -361,9 +393,18 @@ export class NetworkTabView {
       this.render();
     });
 
+    const framesBtn = document.createElement('button');
+    framesBtn.className = `devtools-tab-btn ${this.activeDetailTab === 'frames' ? 'active' : ''}`;
+    framesBtn.textContent = `Frames (${formatCount(req.frames?.length || 0)})`;
+    framesBtn.addEventListener('click', () => {
+      this.activeDetailTab = 'frames';
+      this.render();
+    });
+
     tabsBar.appendChild(respBtn);
     tabsBar.appendChild(payloadBtn);
     tabsBar.appendChild(headersBtn);
+    tabsBar.appendChild(framesBtn);
 
     // Left-aligned Parsed / Raw segmented control & Copy Request button inline
     if (this.activeDetailTab === 'response' || this.activeDetailTab === 'payload') {
@@ -410,6 +451,13 @@ export class NetworkTabView {
     bodyScroll.className = 'devtools-list-scroll';
     bodyScroll.style.padding = '14px';
     setupScrollLockGuard(bodyScroll);
+
+    bodyScroll.addEventListener('scroll', () => {
+      const isAtBottom =
+        bodyScroll.scrollHeight - bodyScroll.scrollTop - bodyScroll.clientHeight < 40;
+      this.isDetailScrolledToBottom = isAtBottom;
+      this.detailScrollTop = bodyScroll.scrollTop;
+    });
 
     if (this.activeDetailTab === 'response') {
       if (!req.responseBody) {
@@ -492,6 +540,72 @@ export class NetworkTabView {
       headersWrap.appendChild(resH4);
       headersWrap.appendChild(resTable);
       bodyScroll.appendChild(headersWrap);
+    } else if (this.activeDetailTab === 'frames') {
+      const frames = req.frames || [];
+      if (frames.length === 0) {
+        bodyScroll.innerHTML =
+          '<div style="color:var(--dev-text-muted)">No WebSocket/SSE frame messages recorded.</div>';
+      } else {
+        const frameWrap = document.createElement('div');
+        frameWrap.style.display = 'flex';
+        frameWrap.style.flexDirection = 'column';
+        frameWrap.style.gap = '8px';
+
+        frames.forEach((frame) => {
+          const item = document.createElement('div');
+          item.style.padding = '8px 10px';
+          item.style.borderRadius = '6px';
+          item.style.background = 'var(--dev-card-bg)';
+          item.style.border = '1px solid var(--dev-border)';
+          item.style.fontSize = '12px';
+          item.style.fontFamily = 'var(--dev-font-mono)';
+
+          const header = document.createElement('div');
+          header.style.display = 'flex';
+          header.style.justifyContent = 'space-between';
+          header.style.alignItems = 'center';
+          header.style.marginBottom = '4px';
+
+          const badge = document.createElement('span');
+          badge.style.padding = '2px 6px';
+          badge.style.borderRadius = '4px';
+          badge.style.fontSize = '10px';
+          badge.style.fontWeight = '700';
+          if (frame.type === 'sent') {
+            badge.style.background = 'rgba(16, 185, 129, 0.15)';
+            badge.style.color = 'var(--dev-success)';
+            badge.textContent = '⬆ Sent';
+          } else {
+            badge.style.background = 'rgba(59, 130, 246, 0.15)';
+            badge.style.color = 'var(--dev-accent)';
+            badge.textContent = '⬇ Received';
+          }
+
+          const time = document.createElement('span');
+          time.style.color = 'var(--dev-text-muted)';
+          time.style.fontSize = '11px';
+          time.textContent = formatTimestamp(frame.timestamp);
+
+          header.appendChild(badge);
+          header.appendChild(time);
+
+          const dataEl = document.createElement('div');
+          dataEl.style.color = 'var(--dev-text-bright)';
+          dataEl.style.wordBreak = 'break-all';
+          dataEl.style.whiteSpace = 'pre-wrap';
+          if (typeof frame.data === 'object' && frame.data !== null) {
+            dataEl.appendChild(renderJsonTree(frame.data));
+          } else {
+            dataEl.textContent = String(frame.data);
+          }
+
+          item.appendChild(header);
+          item.appendChild(dataEl);
+          frameWrap.appendChild(item);
+        });
+
+        bodyScroll.appendChild(frameWrap);
+      }
     }
 
     bodyContainer.appendChild(bodyScroll);
@@ -502,6 +616,21 @@ export class NetworkTabView {
     modal.appendChild(bodyContainer);
 
     this.container.appendChild(modal);
+
+    requestAnimationFrame(() => {
+      if (tabsBar) {
+        tabsBar.scrollLeft = prevSubTabsScrollLeft;
+      }
+      if (bodyScroll) {
+        bodyScroll.scrollLeft = this.detailScrollLeft;
+      }
+      if (this.isDetailScrolledToBottom && this.activeDetailTab === 'frames') {
+        bodyScroll.scrollTop = bodyScroll.scrollHeight;
+      } else {
+        bodyScroll.scrollTop = this.detailScrollTop;
+      }
+    });
+
     return this.container;
   }
 }

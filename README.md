@@ -8,6 +8,7 @@
 [![Turborepo](https://img.shields.io/badge/Monorepo-Turborepo-ef4444.svg)](https://turbo.build/)
 [![React](https://img.shields.io/badge/Adapter-React_18%2F19-61dafb.svg)](https://react.dev/)
 [![Vue](https://img.shields.io/badge/Adapter-Vue_3-42b883.svg)](https://vuejs.org/)
+[![Svelte](https://img.shields.io/badge/Adapter-Svelte_4%2F5-ff3e00.svg)](https://svelte.dev/)
 [![Vanilla JS](https://img.shields.io/badge/Adapter-Vanilla_JS-f7df1e.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
 ---
@@ -22,6 +23,7 @@
 - [🚀 Framework Quickstart](#-framework-quickstart)
   - [⚛️ React Integration](#%EF%B8%8F-react-integration)
   - [💚 Vue 3 Integration](#-vue-3-integration)
+  - [🧡 Svelte 4/5 Integration](#-svelte-45-integration)
   - [🍦 Vanilla JS / Legacy Apps](#-vanilla-js--legacy-apps)
 - [⚙️ Full Configuration & Props Reference](#%EF%B8%8F-full-configuration--props-reference)
 - [🎨 Theme Engine & Customization](#-theme-engine--customization)
@@ -34,13 +36,13 @@
 ## 📸 Showcase
 
 <p align="center">
-  <img src="./docs/assets/console.png" width="31%" alt="Console Tab" />
-  <img src="./docs/assets/elements.png" width="31%" alt="Elements Tab" />
-  <img src="./docs/assets/network.png" width="31%" alt="Network Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/console.png" width="31%" alt="Console Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/elements.png" width="31%" alt="Elements Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/network.png" width="31%" alt="Network Tab" />
 </p>
 <p align="center">
-  <img src="./docs/assets/storage.png" width="31%" alt="Storage Tab" />
-  <img src="./docs/assets/system.png" width="31%" alt="System Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/storage.png" width="31%" alt="Storage Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/system.png" width="31%" alt="System Tab" />
 </p>
 
 ---
@@ -74,28 +76,28 @@ Debugging mobile web applications or QA staging builds on physical smartphones, 
 - 🎨 **Granular UI Style Overrides (`styles`)**: Fine-grained inline CSS style overrides for badge, drawer, overlay, and handle (`styles={{ badge: {}, drawer: {}, overlay: {} }}`).
 - 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection, accent color swatches, and custom background palettes.
 - 🧪 **Comprehensive Test Suite**: Tested with **65 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
-- 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, and **Vanilla JS**.
+- 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, **Svelte 4/5**, and **Vanilla JS**.
 
 ---
 
 ## 🏗️ Technical Architecture
 
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                          mobile-devtools                               │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-           ┌────────────────────────┼────────────────────────┐
-           ▼                        ▼                        ▼
-      Vanilla JS                  React                    Vue 3
-  (mobile-devtools)        (mobile-devtools/react)   (mobile-devtools/vue)
-           │                        │                        │
-           └────────────────────────┼────────────────────────┘
-                                    │
-                      ┌─────────────▼─────────────┐
-                      │   Native Shadow DOM Host  │
-                      │   <mobile-devtools-root>  │
-                      └─────────────┬─────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                 mobile-devtools                                 │
+└────────────────────────────────────────┬────────────────────────────────────────┘
+                                         │
+        ┌───────────────────┬────────────┴───────────┬───────────────────┐
+        ▼                   ▼                        ▼                   ▼
+   Vanilla JS             React                    Vue 3              Svelte
+(mobile-devtools) (mobile-devtools/react)  (mobile-devtools/vue) (mobile-devtools/svelte)
+        │                   │                        │                   │
+        └───────────────────┴────────────┬───────────┴───────────────────┘
+                                         │
+                           ┌─────────────▼─────────────┐
+                           │   Native Shadow DOM Host  │
+                           │   <mobile-devtools-root>  │
+                           └─────────────┬─────────────┘
                                     │
             ┌───────────────────────┴───────────────────────┐
             │                                               │
@@ -193,6 +195,45 @@ Import from `mobile-devtools/vue`:
     :custom-tabs="customTabs"
   />
 </template>
+```
+
+---
+
+### 🔥 Svelte Integration
+
+Import from `mobile-devtools/svelte`:
+
+```svelte
+<script>
+  import { mobileDevTools } from 'mobile-devtools/svelte';
+</script>
+
+<div use:mobileDevTools={{
+  title: 'My App Debugger',
+  position: 'bottom-right',
+  shakeToToggle: true,
+  theme: { mode: 'dark' }
+}}>
+  <YourAppLayout />
+</div>
+```
+
+### 🧡 Svelte 4/5 Integration
+
+Import from `mobile-devtools/svelte`:
+
+```svelte
+<script>
+  import { useMobileDevTools } from 'mobile-devtools/svelte';
+</script>
+
+<div use:useMobileDevTools={{
+  title: 'My App Debugger',
+  position: 'bottom-right',
+  theme: { mode: 'dark', accentColor: '#0070f3' }
+}}>
+  <YourAppLayout />
+</div>
 ```
 
 ---

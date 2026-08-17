@@ -487,6 +487,8 @@ export const SHADOW_STYLES = `
   border-bottom: 1px solid var(--dev-border);
   gap: 6px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
 }
 
 .devtools-tab-btn {

@@ -3,6 +3,7 @@ import {
   clampPositionToViewport,
   DevToolsStore,
   DragPosition,
+  formatCount,
 } from '../../core';
 
 export class FloatingBadgeView {
@@ -45,6 +46,13 @@ export class FloatingBadgeView {
     const unread = this.store.getUnreadCounts();
     const config = this.store.getConfig();
 
+    if (config.showBadge === false) {
+      this.badgeElement.style.display = 'none';
+      return;
+    } else {
+      this.badgeElement.style.display = 'flex';
+    }
+
     const hasErrors = unread.errors > 0;
     const hasWarnings = unread.warnings > 0;
     const hasUnreadTotal = unread.total > 0;
@@ -61,8 +69,8 @@ export class FloatingBadgeView {
     }
     this.badgeElement.style.borderColor = borderColor;
 
-    // Custom badge styling from config.styles?.badge or legacy config.badgeStyle
-    const customBadgeStyles = config.styles?.badge || config.badgeStyle;
+    // Custom badge styling from config.styles?.badge
+    const customBadgeStyles = config.styles?.badge;
     if (customBadgeStyles) {
       Object.assign(this.badgeElement.style, customBadgeStyles);
     }
@@ -89,11 +97,11 @@ export class FloatingBadgeView {
 
     let tagHtml = '';
     if (hasErrors) {
-      tagHtml = `<span class="devtools-badge-count">${unread.errors > 99 ? '99+' : unread.errors}</span>`;
+      tagHtml = `<span class="devtools-badge-count">${formatCount(unread.errors)}</span>`;
     } else if (hasWarnings) {
-      tagHtml = `<span class="devtools-badge-tag">${unread.warnings}</span>`;
+      tagHtml = `<span class="devtools-badge-tag">${formatCount(unread.warnings)}</span>`;
     } else if (hasUnreadTotal) {
-      tagHtml = `<span class="devtools-badge-tag">${unread.total}</span>`;
+      tagHtml = `<span class="devtools-badge-tag">${formatCount(unread.total)}</span>`;
     }
 
     this.badgeElement.innerHTML = `

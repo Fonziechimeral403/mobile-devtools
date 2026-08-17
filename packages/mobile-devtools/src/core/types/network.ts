@@ -6,6 +6,13 @@ import {
 
 export type { NetworkRequestType, NetworkStatus, NetworkThrottlingProfile };
 
+export interface NetworkFrameMessage {
+  id: string;
+  type: 'sent' | 'received';
+  data: any;
+  timestamp: number;
+}
+
 export interface NetworkRequestEntry {
   id: string;
   url: string;
@@ -22,4 +29,5 @@ export interface NetworkRequestEntry {
   responseBody?: any;
   responseType?: string;
   errorState?: NetworkStatus;
+  frames?: NetworkFrameMessage[];
 }

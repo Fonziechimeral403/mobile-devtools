@@ -2,6 +2,7 @@ import { NETWORK_STATUS, NETWORK_THROTTLING, NETWORK_TYPES } from '../constants'
 import { DevToolsStore } from '../stores/devtools-store';
 import { NetworkRequestEntry } from '../types/network';
 import { isServer } from '../utils/env';
+import { generateId } from '../utils/id';
 import { maskSensitiveValue } from '../utils/privacy';
 
 export class NetworkInterceptor {
@@ -32,7 +33,7 @@ export class NetworkInterceptor {
 
     window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
       const startTime = Date.now();
-      const id = `${startTime}-${Math.random().toString(36).substring(2, 9)}`;
+      const id = generateId('req');
 
       let url = '';
       if (typeof input === 'string') {
@@ -179,7 +180,7 @@ export class NetworkInterceptor {
     this.originalXhrSetRequestHeader = proto.setRequestHeader;
 
     proto.open = function (method: string, url: string | URL, ...rest: any[]) {
-      (this as any).__devToolsId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      (this as any).__devToolsId = generateId('xhr');
       (this as any).__devToolsMethod = method.toUpperCase();
       (this as any).__devToolsUrl = typeof url === 'string' ? url : url.toString();
       (this as any).__devToolsReqHeaders = {};

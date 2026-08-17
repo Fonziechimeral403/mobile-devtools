@@ -3,9 +3,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { cloudflare } from '@cloudflare/vite-plugin';
 import { getDevToolsAliases } from '@mobile-devtools/vite-config';
+import { ssePlugin } from './plugins/sse-plugin';
 
 export default defineConfig({
-  plugins: [react(), cloudflare()],
+  plugins: [react(), cloudflare(), ssePlugin()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -14,6 +15,5 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    allowedHosts: ['campaign-beauty-canvas-its.trycloudflare.com'],
   },
 });

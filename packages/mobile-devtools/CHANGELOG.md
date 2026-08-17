@@ -4,6 +4,27 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.3.0] - 2026-08-17
+
+### ⚡ Real-time SSE/WebSocket Interception & Shake-to-Toggle Motion Detection
+
+#### Added
+
+- **Svelte 4/5 Framework Adapter**: Added first-class Svelte adapter (`mobile-devtools/svelte`) with reactive store support (`mobileDevTools`), `useMobileDevTools()` action directive, and `peerDependencies` declarations.
+- **Real-time EventSource (SSE) Stream Interception**: Intercepts native SSE streams (`text/event-stream`), custom event listeners (`es.addEventListener(...)`), and streams live payload updates directly to the Network tab.
+- **WebSocket Real-time Frame Interception**: Captures incoming and outgoing WebSocket frames with live payload inspection and real-time tab frame counter updates.
+- **`shakeToToggle` Physical Motion Gesture**: Toggle the DevTools overlay by shaking physical mobile devices. Built with a low-pass gravity filter sensor fusion and seamless iOS Safari permission request handling.
+- **Smart Scroll Preserving & Auto-scroll**: Preserves exact list scroll position when inspecting past logs/frames during fast live streaming, and auto-scrolls to bottom when monitoring live activity.
+- **Full TSDoc/JSDoc Annotations**: Comprehensive IDE hover tooltips, `@default` values, and `@example` code blocks across all types, `DevToolsConfig`, and utility functions.
+
+#### Fixed & Improved
+
+- **Badge Count Cap**: Standardized all unread count badges and counter labels to cap at `99+`.
+- **Crypto-based `generateId(prefix)`**: Created collision-free ID generator using `crypto.randomUUID()` with fallback.
+- **Style Source of Truth**: Consolidated badge custom styling to `config.styles?.badge` and removed redundant top-level `badgeStyle` prop.
+- **Dead Code Cleanup**: Audited `apps/web/src` and removed unused `DevToolsWrapper` component.
+
+---
 
 ## [1.2.0] - 2026-08-17
 
