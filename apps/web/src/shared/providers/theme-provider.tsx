@@ -24,13 +24,27 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode; defaultTheme?:
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
 
+    let activeTheme: 'dark' | 'light' = 'dark';
     if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      root.classList.add(systemTheme);
-      setResolvedTheme(systemTheme);
+      activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     } else {
-      root.classList.add(theme);
-      setResolvedTheme(theme);
+      activeTheme = theme;
+    }
+
+    root.classList.add(activeTheme);
+    setResolvedTheme(activeTheme);
+
+    // Sync mobile browser status bar / theme-color meta tag with navbar background
+    const barColor = activeTheme === 'dark' ? '#090d16' : '#f8fafc';
+    let metaThemeColor = document.getElementById('meta-theme-color');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', barColor);
+    } else {
+      metaThemeColor = document.createElement('meta');
+      metaThemeColor.id = 'meta-theme-color';
+      metaThemeColor.setAttribute('name', 'theme-color');
+      metaThemeColor.setAttribute('content', barColor);
+      document.head.appendChild(metaThemeColor);
     }
   }, [theme]);
 

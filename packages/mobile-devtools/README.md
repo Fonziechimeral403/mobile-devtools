@@ -11,23 +11,85 @@
 
 ---
 
-## 📌 Features
+## 📌 Table of Contents
 
-- ⚡ **Ultra-Lightweight & Fast**: Small footprint (**~2.0 kB gzipped**) with zero runtime dependencies.
-- 🌳 **DOM Elements Inspector (Elements Tab)**: Real-time HTML DOM tree browser, interactive element picker, box model visualization (margin, border, padding, content), computed CSS styles, and grouped style categories (Layout, Flexbox, Grid, Typography, Colors).
-- 📋 **Console Tab**: Real-time capture of `console.log`, `info`, `warn`, `error`, and `debug` with live filter search, JSON tree preview, and unread error badges.
-- 🌐 **Network Tab**: Live interception of `fetch` and `XMLHttpRequest` calls with HTTP status indicators, latency timing, request/response headers, and JSON body previews.
-- 💾 **Storage Tab**: Real-time inspector and editor for `localStorage`, `sessionStorage`, and `document.cookie`.
-- 💻 **System Info Tab**: Real-time diagnostic monitor for viewport dimensions, device pixel ratio (DPR), user agent string, memory limit, and screen orientation.
-- 🚀 **Quick Bug Exporter**: Instant 1-click bug report sharing via Web Share API (`navigator.share`) with text file download and copy fallbacks.
-- 🛡️ **Shadow DOM Style Isolation**: Rendered inside a Shadow DOM container (`<mobile-devtools-root>`), guaranteeing **zero CSS leaks** into your app's global styles.
-- 🔌 **Pluggable Custom Tabs (`customTabs`)**: Easily extend DevTools by adding custom tabs with your own DOM rendering callbacks (`render(container)`).
-- 🎨 **Granular UI Style Overrides (`styles`)**: Fine-grained inline CSS style overrides for badge, drawer, overlay, and handle (`styles={{ badge: {}, drawer: {}, overlay: {} }}`).
-- 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection.
+- [💡 Motivation & Why Use It?](#-motivation--why-use-it)
+- [✨ Core Capabilities](#-core-capabilities)
+- [🏗️ Technical Architecture](#%EF%B8%8F-technical-architecture)
+- [🚀 Framework Quickstart](#-framework-quickstart)
+  - [⚛️ React Integration](#%EF%B8%8F-react-integration)
+  - [💚 Vue 3 Integration](#-vue-3-integration)
+  - [🍦 Vanilla JS / Legacy Apps](#-vanilla-js--legacy-apps)
+- [⚙️ Full Configuration & Props Reference](#%EF%B8%8F-full-configuration--props-reference)
+- [🎨 Theme Engine & Customization](#-theme-engine--customization)
+- [📄 License](#-license)
 
 ---
 
-## 🚀 Quickstart
+## 💡 Motivation & Why Use It?
+
+Debugging mobile web applications or QA staging builds on physical smartphones, tablets, or embedded webviews is historically painful:
+
+- ❌ Requiring physical USB debugging cables connected to a desktop computer.
+- ❌ Configuring Safari Remote Inspector or Chrome Inspect ports over local WiFi.
+- ❌ Losing console logs when a mobile browser crashes or refreshes.
+- ❌ Inability to inspect network traffic on production staging environments without desktop proxies (Charles / Fiddler / Proxyman).
+
+**`mobile-devtools`** eliminates these pain points entirely. It embeds a lightweight, high-performance floating badge and overlay drawer directly inside your web application. You can inspect logs, monitor network calls, browse DOM trees, edit local storage, and inspect device specs anytime, anywhere — directly on screen without external tools or cables.
+
+---
+
+## ✨ Core Capabilities
+
+- ⚡ **Ultra-Lightweight & Fast**: Extremely small footprint (**~2.0 kB gzipped** / **~5.8 kB minified**) with zero runtime dependencies, ensuring zero impact on page load speed or mobile frame rates.
+- 🌳 **DOM Elements Inspector (Elements Tab)**: Real-time HTML DOM tree browser, node expansion, interactive element picker, box model visualization (margin, border, padding, content), computed CSS styles, and grouped style categories (Layout, Flexbox, Grid, Typography, Colors).
+- 🚀 **Quick Bug Exporter**: Instant 1-click bug report sharing via Web Share API (`navigator.share`) to WhatsApp, Telegram, Slack, AirDrop, or Email with text file download and copy fallbacks.
+- 🌐 **Network Throttling Simulator**: Simulate `Slow 3G`, `Fast 3G`, or `Offline` connection modes directly on mobile devices with synthetic latency injection.
+- ⚡ **Cable-Free Mobile Inspection**: Debug directly on physical iOS / Android devices, mobile webviews, or mobile Safari/Chrome.
+- 🛡️ **Shadow DOM Style Isolation**: Rendered inside a Shadow DOM container (`<mobile-devtools-root>`), guaranteeing **zero CSS leaks** into your app's global styles and **zero style pollution** from Tailwind, Bootstrap, or global CSS resets.
+- 📋 **Console Tab**: Real-time capture of `console.log`, `info`, `warn`, `error`, and `debug` with live filter search, JSON tree preview, and unread error badges.
+- 🌐 **Network Tab**: Live interception of `fetch` and `XMLHttpRequest` calls with HTTP status indicators (`200 OK`, `500 Error`), latency timing, request/response headers, and JSON body previews.
+- 💾 **Storage Tab**: Real-time inspector and editor for `localStorage`, `sessionStorage`, and `document.cookie`.
+- 💻 **System Info Tab**: Real-time diagnostic monitor for viewport dimensions, device pixel ratio (DPR), user agent string, memory limit, and screen orientation.
+- 🔌 **Pluggable Custom Tabs (`customTabs`)**: Easily extend DevTools by adding custom tabs with your own DOM rendering callbacks (`render(container)`).
+- 🎨 **Granular UI Style Overrides (`styles`)**: Fine-grained inline CSS style overrides for badge, drawer, overlay, and handle (`styles={{ badge: {}, drawer: {}, overlay: {} }}`).
+- 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection, accent color swatches, and custom background palettes.
+- 🧪 **Comprehensive Test Suite**: Tested with **65 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
+- 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, and **Vanilla JS**.
+
+---
+
+## 🏗️ Technical Architecture
+
+```mermaid
+graph TD
+    A["mobile-devtools"] --> B["Core Engine & Store"]
+    A --> C["Shadow DOM UI Engine"]
+    A --> D["Subpath Exports"]
+    D --> E["mobile-devtools (Vanilla JS)"]
+    D --> F["mobile-devtools/react (React)"]
+    D --> G["mobile-devtools/vue (Vue 3)"]
+
+    subgraph Core Features
+        A1[Console Interceptor]
+        A2[Fetch / XHR Interceptor]
+        A3[Elements Manager]
+        A4[Storage Listener]
+        A5[DevTools Store & State]
+    end
+
+    subgraph UI Engine
+        B1[Shadow DOM Host]
+        B2[Floating Badge View]
+        B3[Drawer Views & Tabs]
+        B4[Custom Tabs Engine]
+        B5[Auto Contrast Theme Helper]
+    end
+```
+
+---
+
+## 🚀 Framework Quickstart
 
 ### 📦 Installation
 
@@ -41,6 +103,8 @@ pnpm add mobile-devtools
 
 ### ⚛️ React Integration
 
+Import from `mobile-devtools/react`:
+
 ```tsx
 import React from 'react';
 import { MobileDevTools } from 'mobile-devtools/react';
@@ -49,11 +113,26 @@ export default function App() {
   return (
     <>
       <YourAppRoutes />
+
+      {/* Mobile DevTools Overlay */}
       <MobileDevTools
         title="My App Debugger"
         position="bottom-right"
         enabledTabs={['console', 'elements', 'network', 'storage', 'system']}
         theme={{ mode: 'dark', accentColor: '#0070f3' }}
+        styles={{
+          badge: { opacity: '0.9' },
+        }}
+        customTabs={[
+          {
+            id: 'analytics',
+            title: 'Analytics',
+            render: (container) => {
+              container.innerHTML =
+                '<div style="padding:16px;color:#fff;">📊 Custom Event Log</div>';
+            },
+          },
+        ]}
       />
     </>
   );
@@ -64,9 +143,21 @@ export default function App() {
 
 ### 💚 Vue 3 Integration
 
+Import from `mobile-devtools/vue`:
+
 ```html
 <script setup>
   import { MobileDevTools } from 'mobile-devtools/vue';
+
+  const customTabs = [
+    {
+      id: 'analytics',
+      title: 'Analytics',
+      render: (container) => {
+        container.innerHTML = '<div style="padding:16px;color:#fff;">📊 Custom Event Log</div>';
+      },
+    },
+  ];
 </script>
 
 <template>
@@ -76,6 +167,7 @@ export default function App() {
     position="bottom-right"
     :enabled-tabs="['console', 'elements', 'network', 'storage', 'system']"
     :theme="{ mode: 'dark', accentColor: '#0070f3' }"
+    :custom-tabs="customTabs"
   />
 </template>
 ```
@@ -84,9 +176,12 @@ export default function App() {
 
 ### 🍦 Vanilla JS / Legacy Apps
 
+Import directly from `mobile-devtools`:
+
 ```typescript
 import { createMobileDevTools } from 'mobile-devtools';
 
+// Instantiate DevTools overlay
 const devtools = createMobileDevTools({
   title: 'My App Debugger',
   position: 'bottom-right',
@@ -95,25 +190,70 @@ const devtools = createMobileDevTools({
     mode: 'dark',
     accentColor: '#0070f3',
   },
+  styles: {
+    badge: { opacity: '0.9' },
+    drawer: { maxHeight: '85vh' },
+  },
+  customTabs: [
+    {
+      id: 'analytics',
+      title: 'Analytics',
+      render: (container) => {
+        container.innerHTML = '<div style="padding:16px;color:#fff;">📊 Custom Event Log</div>';
+      },
+    },
+  ],
 });
 ```
 
 ---
 
-## ⚙️ Configuration Reference
+## ⚙️ Full Configuration & Props Reference
 
-| Option / Prop   | Type                    | Default                                                   | Description                                                                     |
-| :-------------- | :---------------------- | :-------------------------------------------------------- | :------------------------------------------------------------------------------ |
-| `enabled`       | `boolean`               | `true` (in dev)                                           | Enable/disable overlay. Automatically false in production builds.              |
-| `forceEnable`  | `boolean`               | `false`                                                   | Force enable overlay in production for QA testing & staging previews.           |
-| `title`         | `string`                | `'DevTools'`                                              | Label shown on floating badge and drawer header                                 |
-| `position`      | `BadgePositionPreset`   | `'bottom-right'`                                          | Initial corner preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, etc.)  |
-| `initialTab`    | `DevToolsTabId`         | `'console'`                                               | Default tab opened (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`) |
-| `enabledTabs`   | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']` | Filter enabled tabs                                                             |
-| `customTabs`    | `CustomTabDefinition[]` | `[]`                                                      | Pluggable custom tabs with DOM rendering callback (`render(container)`)         |
-| `styles`        | `DevToolsStyles`        | `undefined`                                               | Custom style overrides (`{ badge?: {}, drawer?: {}, overlay?: {} }`)            |
-| `theme.mode`    | `'dark' \| 'light'`     | `'dark'`                                                  | Theme mode                                                                      |
-| `autoSnapBadge` | `boolean`               | `false`                                                   | Auto snap badge to nearest screen edge on drag release                          |
+Below is the complete reference table for all configuration options supported by `<MobileDevTools />` / `createMobileDevTools()`:
+
+| Option / Prop               | Type                    | Default                                                      | Description                                                                                                                           |
+| :-------------------------- | :---------------------- | :----------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`                   | `boolean`               | `true` (in dev)                                              | Enable or disable the DevTools overlay. Automatically set to `false` in production builds.                                            |
+| `forceEnable`               | `boolean`               | `false`                                                      | Force enable DevTools overlay in production builds for QA testing & staging previews.                                                 |
+| `title`                     | `string`                | `'DevTools'`                                                 | Label shown on floating badge and drawer header                                                                                       |
+| `icon`                      | `string`                | `undefined`                                                  | Custom icon (Emoji string like `'⚡'`, Image URL, or Base64 data URI)                                                                 |
+| `position`                  | `BadgePositionPreset`   | `'bottom-right'`                                             | Initial corner/edge preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'`, `'bottom'`, `'top'`, `'left'`, `'right'`) |
+| `initialTab`                | `DevToolsTabId`         | `'console'`                                                  | Default tab opened when drawer is triggered (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`)                         |
+| `enabledTabs`               | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']`    | Filter which tabs are enabled in drawer                                                                                               |
+| `customTabs`                | `CustomTabDefinition[]` | `[]`                                                         | Pluggable consumer tabs with custom DOM rendering callback (`render(container)`)                                                      |
+| `styles`                    | `DevToolsStyles`        | `undefined`                                                  | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
+| `defaultOpen`               | `boolean`               | `false`                                                      | Set to `true` to open drawer automatically on mount                                                                                   |
+| `autoSnapBadge`             | `boolean`               | `false`                                                      | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
+| `theme.mode`                | `'dark' \| 'light'`     | `'dark'`                                                     | Theme mode                                                                                                                            |
+| `theme.accentColor`         | `string`                | `undefined`                                                  | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
+| `theme.backgroundColor`     | `string`                | `undefined`                                                  | Custom background color for drawer and badge                                                                                          |
+| `theme.cardBackgroundColor` | `string`                | `undefined`                                                  | Custom background color for inner card elements                                                                                       |
+| `privacy.mask`              | `string[]`              | `undefined`                                                  | Sensitive header & body keys to mask in network inspector (e.g. `['token', 'password']`)                               |
+| `interceptors.maxLogLimit`  | `number`                | `200`                                                        | Maximum number of console logs stored in buffer                                                                                       |
+
+---
+
+## 🎨 Theme Engine & Customization
+
+`mobile-devtools` features a built-in theme engine that automatically calculates background brightness to maintain **WCAG AAA readable text contrast**:
+
+```tsx
+<MobileDevTools
+  title="Staging Debugger"
+  icon="🚀"
+  position="bottom-left"
+  theme={{
+    mode: 'dark',
+    accentColor: '#10b981',
+    backgroundColor: '#0c0c0e',
+  }}
+  styles={{
+    badge: { borderRadius: '12px' },
+    drawer: { borderTopLeftRadius: '20px', borderTopRightRadius: '20px' },
+  }}
+/>
+```
 
 ---
 
