@@ -1,6 +1,10 @@
-export type NetworkRequestType = 'fetch' | 'xhr';
-export type NetworkStatus = 'pending' | 'success' | 'error';
-export type NetworkThrottlingProfile = 'online' | 'fast-3g' | 'slow-3g' | 'offline';
+import {
+  NetworkRequestType,
+  NetworkStatus,
+  NetworkThrottlingProfile,
+} from '../constants';
+
+export type { NetworkRequestType, NetworkStatus, NetworkThrottlingProfile };
 
 export interface NetworkRequestEntry {
   id: string;

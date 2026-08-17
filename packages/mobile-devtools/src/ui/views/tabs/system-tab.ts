@@ -1,4 +1,5 @@
 import { copyToClipboard, DevToolsStore, isBrowser } from '../../../core';
+import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
 export class SystemTabView {
   private container: HTMLElement;
@@ -14,6 +15,7 @@ export class SystemTabView {
     const listScroll = document.createElement('div');
     listScroll.className = 'devtools-list-scroll';
     listScroll.style.padding = '14px';
+    setupScrollLockGuard(listScroll);
 
     const isWin = isBrowser;
     const ua = isWin ? navigator.userAgent : 'Server-side';

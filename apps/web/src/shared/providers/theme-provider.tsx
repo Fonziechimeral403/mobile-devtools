@@ -32,10 +32,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode; defaultTheme?:
     }
 
     root.classList.add(activeTheme);
+    root.style.colorScheme = activeTheme;
     setResolvedTheme(activeTheme);
 
-    // Sync mobile browser status bar / theme-color meta tag with navbar background
-    const barColor = activeTheme === 'dark' ? '#090d16' : '#f8fafc';
+    // Sync mobile browser status bar / theme-color meta tag with navbar background (#0a0a0a dark, #ffffff light)
+    const barColor = activeTheme === 'dark' ? '#0a0a0a' : '#ffffff';
+    const statusBarStyle = activeTheme === 'dark' ? 'black-translucent' : 'default';
+
     let metaThemeColor = document.getElementById('meta-theme-color');
     if (metaThemeColor) {
       metaThemeColor.setAttribute('content', barColor);
@@ -45,6 +48,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode; defaultTheme?:
       metaThemeColor.setAttribute('name', 'theme-color');
       metaThemeColor.setAttribute('content', barColor);
       document.head.appendChild(metaThemeColor);
+    }
+
+    let metaStatusBar = document.getElementById('meta-status-bar-style');
+    if (metaStatusBar) {
+      metaStatusBar.setAttribute('content', statusBarStyle);
+    } else {
+      metaStatusBar = document.createElement('meta');
+      metaStatusBar.id = 'meta-status-bar-style';
+      metaStatusBar.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
+      metaStatusBar.setAttribute('content', statusBarStyle);
+      document.head.appendChild(metaStatusBar);
     }
   }, [theme]);
 

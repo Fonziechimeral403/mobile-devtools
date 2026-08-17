@@ -52,11 +52,14 @@ export class FloatingBadgeView {
     // Positioning & Borders
     this.badgeElement.style.left = `${clamped.x}px`;
     this.badgeElement.style.top = `${clamped.y}px`;
-    this.badgeElement.style.borderColor = hasErrors
-      ? 'rgba(239, 68, 68, 0.4)'
-      : hasWarnings
-        ? 'rgba(245, 158, 11, 0.4)'
-        : 'var(--dev-border)';
+
+    let borderColor = 'var(--dev-border)';
+    if (hasErrors) {
+      borderColor = 'rgba(239, 68, 68, 0.4)';
+    } else if (hasWarnings) {
+      borderColor = 'rgba(245, 158, 11, 0.4)';
+    }
+    this.badgeElement.style.borderColor = borderColor;
 
     // Custom badge styling from config.styles?.badge or legacy config.badgeStyle
     const customBadgeStyles = config.styles?.badge || config.badgeStyle;
@@ -73,7 +76,13 @@ export class FloatingBadgeView {
         dotHtml = typeof config.icon === 'string' ? `<span style="font-size:14px;margin-right:2px">${config.icon}</span>` : '';
       }
     } else {
-      dotHtml = `<span class="devtools-badge-dot ${hasErrors ? 'error' : hasWarnings ? 'warn' : ''}"></span>`;
+      let statusClass = '';
+      if (hasErrors) {
+        statusClass = 'error';
+      } else if (hasWarnings) {
+        statusClass = 'warn';
+      }
+      dotHtml = `<span class="devtools-badge-dot ${statusClass}"></span>`;
     }
 
     const titleText = config.title || 'DevTools';

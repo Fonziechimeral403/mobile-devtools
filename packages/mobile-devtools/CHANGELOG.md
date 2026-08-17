@@ -5,6 +5,22 @@ All notable changes to the `mobile-devtools` package will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-17
+
+### 🔒 Scroll Locking, Adapter Test Coverage & E2E Suite
+
+#### Added
+
+- **Background Scroll Locking**: Prevents body scrolling when DevTools drawer overlay is open.
+- **Framework Adapter Tests**: Added comprehensive unit test suites for React (`react.test.tsx`) and Vue (`vue.test.ts`) adapters.
+- **Web App E2E Test Suite**: Added Playwright E2E coverage for Elements, Network, Storage, and Theme System interactions.
+
+#### Fixed & Improved
+
+- **Vue Adapter Hook**: Resolved TypeScript narrowing issue on `useMobileDevTools()` return type in strict mode.
+- **Network & Storage Tab Formatting**: Enhanced HTTP status pills, response time indicators, JSON response headers formatting, and item action buttons.
+- **Console & Storage Utilities**: Added clipboard copy and export capabilities with dedicated unit tests.
+
 ---
 
 ## [1.0.2] - 2026-08-17
@@ -12,11 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Web App & Documentation Enhancements
 
 #### Added
+
 - **UI Showcase**: Added high-resolution screenshots for Console, Network, Elements, Storage, and System Info tabs in `README.md`.
 - **Shared URL Constants**: Centralized project URLs (`SITE`, `GITHUB`, `NPM`) in `@/shared/constants` for consistent consumer navigation.
 - **`robots.txt`**: Added `robots.txt` with Sitemap reference for web application SEO.
 
 #### Fixed & Improved
+
 - **Cloudflare Deployment**: Resolved asset upload infinite redirect loop by removing redundant `_redirects` file and switching build script to Node 24 support.
 - **Dynamic Versioning**: Replaced hardcoded version strings in Web UI footer with dynamic `VERSION` import from `mobile-devtools`.
 - **Git & Build Hygiene**: Ignored `.wrangler` state directory in `.gitignore` and untracked build artifacts.
@@ -28,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🎨 Theme Support & Documentation Polish
 
 #### Added
+
 - **npm Compatibility**: Replaced Mermaid diagram in package `README.md` with ASCII architecture diagrams for clean rendering on npmjs.com package page.
 - **Theme Color Synchronization**: Added mobile status bar meta theme color syncing (`#090d16`) in web portal application.
 - **Monorepo Build Pipelines**: Added prebuild script to automatically build `mobile-devtools` package before web app build step.
@@ -41,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `mobile-devtools` is a next-generation, framework-agnostic in-app mobile debugger and inspector overlay for web applications.
 
 #### Added
+
 - **Core Engine & Reactive Store**:
   - `DevToolsStore` state management with reactive subscription model, unread error counters, and buffer caps.
   - Native Shadow DOM encapsulation (`<mobile-devtools-root>`) guaranteeing 0% CSS leaks into host applications.

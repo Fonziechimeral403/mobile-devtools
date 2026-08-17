@@ -1,5 +1,6 @@
 import { DevToolsStore, isBrowser } from '../../../core';
 import { CHECK_ICON, CLOSE_ICON, PLUS_ICON, TRASH_ICON } from '../../icons';
+import { setupScrollLockGuard } from '../../utils/scroll-lock';
 
 export class StorageTabView {
   private container: HTMLElement;
@@ -24,8 +25,8 @@ export class StorageTabView {
 
     const storageSelect = document.createElement('select');
     storageSelect.className = 'devtools-select';
-    storageSelect.style.width = '130px';
-    storageSelect.style.minWidth = '130px';
+    storageSelect.style.width = '140px';
+    storageSelect.style.minWidth = '140px';
     storageSelect.innerHTML = `
       <option value="localStorage">localStorage</option>
       <option value="sessionStorage">sessionStorage</option>
@@ -81,6 +82,7 @@ export class StorageTabView {
     // List Container
     this.listScrollContainer = document.createElement('div');
     this.listScrollContainer.className = 'devtools-list-scroll';
+    setupScrollLockGuard(this.listScrollContainer);
 
     this.container.appendChild(toolbar);
     this.container.appendChild(this.listScrollContainer);

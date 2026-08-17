@@ -13,12 +13,17 @@ import { NetworkTabView } from './tabs/network-tab';
 import { StorageTabView } from './tabs/storage-tab';
 import { SystemTabView } from './tabs/system-tab';
 
+import { setupScrollLockGuard } from '../utils/scroll-lock';
+
 export class DrawerView {
   private store: DevToolsStore;
   private overlayElement: HTMLElement;
   private drawerElement: HTMLElement;
   private tabContentContainer: HTMLElement;
   private unsubscribeStore: (() => void) | null = null;
+  private originalBodyOverflow: string | null = null;
+  private originalDocOverflow: string | null = null;
+  private isBodyLocked = false;
 
   private consoleTab: ConsoleTabView;
   private elementsTab: ElementsTabView;
@@ -46,6 +51,8 @@ export class DrawerView {
     this.tabContentContainer.style.flexDirection = 'column';
     this.tabContentContainer.style.overflow = 'hidden';
 
+    setupScrollLockGuard(this.tabContentContainer);
+
     this.consoleTab = new ConsoleTabView(store);
     this.elementsTab = new ElementsTabView(store);
     this.networkTab = new NetworkTabView(store);
@@ -69,6 +76,17 @@ export class DrawerView {
     this.overlayElement.addEventListener('click', () => {
       this.handleClose();
     });
+
+    this.overlayElement.addEventListener(
+      'touchmove',
+      (e: TouchEvent) => {
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        e.stopPropagation();
+      },
+      { passive: false }
+    );
   }
 
   private handleClose() {
@@ -76,23 +94,43 @@ export class DrawerView {
     this.store.setIsOpen(false);
   }
 
-  private setupSwipeGesture() {
-    const handleArea = document.createElement('div');
-    handleArea.className = 'devtools-handle-area';
-    handleArea.title = 'Hold and swipe down to hide DevTools';
-    handleArea.innerHTML = '<div class="devtools-handle-bar"></div>';
+  private lockBodyScroll() {
+    if (this.isBodyLocked || typeof document === 'undefined') return;
+    this.originalBodyOverflow = document.body.style.overflow;
+    this.originalDocOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    this.isBodyLocked = true;
+  }
 
-    handleArea.addEventListener('pointerdown', (e: PointerEvent) => {
+  private unlockBodyScroll() {
+    if (!this.isBodyLocked || typeof document === 'undefined') return;
+    document.body.style.overflow = this.originalBodyOverflow || '';
+    document.documentElement.style.overflow = this.originalDocOverflow || '';
+    this.originalBodyOverflow = null;
+    this.originalDocOverflow = null;
+    this.isBodyLocked = false;
+  }
+
+
+
+  private attachSwipeListeners(element: HTMLElement) {
+    element.addEventListener('pointerdown', (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('.devtools-header-actions, button, a, input, select')) {
+        return;
+      }
+
       this.swipeStartY = e.clientY;
       this.isSwiping = true;
       try {
-        handleArea.setPointerCapture(e.pointerId);
+        element.setPointerCapture(e.pointerId);
       } catch {
         // Ignore
       }
     });
 
-    handleArea.addEventListener('pointermove', (e: PointerEvent) => {
+    element.addEventListener('pointermove', (e: PointerEvent) => {
       if (this.swipeStartY === null) return;
       const deltaY = e.clientY - this.swipeStartY;
       if (deltaY > 0) {
@@ -104,7 +142,7 @@ export class DrawerView {
     const handlePointerUp = (e: PointerEvent) => {
       if (this.swipeStartY === null) return;
       try {
-        handleArea.releasePointerCapture(e.pointerId);
+        element.releasePointerCapture(e.pointerId);
       } catch {
         // Ignore
       }
@@ -119,9 +157,17 @@ export class DrawerView {
       }
     };
 
-    handleArea.addEventListener('pointerup', handlePointerUp);
-    handleArea.addEventListener('pointercancel', handlePointerUp);
+    element.addEventListener('pointerup', handlePointerUp);
+    element.addEventListener('pointercancel', handlePointerUp);
+  }
 
+  private setupSwipeGesture() {
+    const handleArea = document.createElement('div');
+    handleArea.className = 'devtools-handle-area';
+    handleArea.title = 'Hold and swipe down to hide DevTools';
+    handleArea.innerHTML = '<div class="devtools-handle-bar"></div>';
+
+    this.attachSwipeListeners(handleArea);
     this.drawerElement.appendChild(handleArea);
   }
 
@@ -157,9 +203,11 @@ export class DrawerView {
     if (isOpen) {
       this.overlayElement.classList.add('open');
       this.drawerElement.classList.add('open');
+      this.lockBodyScroll();
     } else {
       this.overlayElement.classList.remove('open');
       this.drawerElement.classList.remove('open');
+      this.unlockBodyScroll();
     }
     this.updateDrawerTransform();
 
@@ -249,10 +297,12 @@ export class DrawerView {
     headerActions.appendChild(closeBtn);
     header.appendChild(titleGroup);
     header.appendChild(headerActions);
+    this.attachSwipeListeners(header);
 
     // Segmented Tabs Bar
     const tabsBar = document.createElement('div');
     tabsBar.className = 'devtools-tabs-bar';
+    setupScrollLockGuard(tabsBar);
 
     const enabledTabs = config.enabledTabs || [
       BUILTIN_TABS.CONSOLE,
@@ -312,6 +362,7 @@ export class DrawerView {
   }
 
   public destroy() {
+    this.unlockBodyScroll();
     if (this.unsubscribeStore) {
       this.unsubscribeStore();
       this.unsubscribeStore = null;

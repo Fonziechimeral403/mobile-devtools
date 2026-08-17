@@ -11,7 +11,7 @@ import { VERSION } from 'mobile-devtools';
 
 export const Navbar: React.FC = () => {
   return (
-    <header className="sticky top-0 z-50 w-full bg-dev-bg-100/90 backdrop-blur-md border-b border-dev-border transition-colors duration-200">
+    <header className="sticky top-0 z-50 w-full bg-dev-bg-100/90 backdrop-blur-md border-b border-dev-border transition-colors duration-200 pt-[env(safe-area-inset-top)]">
       <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         {/* Logo Group */}
         <Link to="/" className="flex items-center gap-2.5 group">
