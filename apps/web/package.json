@@ -12,7 +12,8 @@
     "check-types": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "deploy": "pnpm build && wrangler pages deploy dist",
+    "deploy": "pnpm build && wrangler deploy",
+    "cf-typegen": "wrangler types",
     "preview:pages": "wrangler pages dev dist"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "1.51.0",
     "@mobile-devtools/eslint-config": "workspace:*",
     "@mobile-devtools/tsconfig": "workspace:*",
     "@mobile-devtools/vite-config": "workspace:*",
@@ -40,6 +42,6 @@
     "tailwindcss": "^4.3.3",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "wrangler": "^3.109.0"
+    "wrangler": "^4.119.0"
   }
 }

@@ -34,3 +34,6 @@ pnpm-debug.log*
 
 # Playwright
 playwright-report
+
+# Cloudflare
+worker-configuration.d.ts
