@@ -3,11 +3,12 @@ import {
   DEVTOOLS_CLASSNAMES,
   DevToolsConfig,
   DevToolsStore,
-  ElementsManager,
   isBrowser,
   NetworkInterceptor,
   ShadowHostManager,
-  StorageManager,
+  ShakeDetector,
+  SSEInterceptor,
+  WebSocketInterceptor,
 } from '../core';
 import { DrawerView } from './views/drawer';
 import { FloatingBadgeView } from './views/floating-badge';
@@ -24,6 +25,9 @@ export class MobileDevToolsEngine {
   private shadowContainer: HTMLElement | null = null;
   private consoleInterceptor: ConsoleInterceptor | null = null;
   private networkInterceptor: NetworkInterceptor | null = null;
+  private wsInterceptor: WebSocketInterceptor | null = null;
+  private sseInterceptor: SSEInterceptor | null = null;
+  private shakeDetector: ShakeDetector | null = null;
   private badgeView: FloatingBadgeView | null = null;
   private drawerView: DrawerView | null = null;
   private unsubscribeStore: (() => void) | null = null;
@@ -86,6 +90,26 @@ export class MobileDevToolsEngine {
       this.networkInterceptor.init();
     }
 
+    if (interceptorsConfig?.enableWebSocketInterceptor !== false) {
+      this.wsInterceptor = new WebSocketInterceptor(this.store);
+      this.wsInterceptor.init();
+    }
+
+    if (interceptorsConfig?.enableSSEInterceptor !== false) {
+      this.sseInterceptor = new SSEInterceptor(this.store);
+      this.sseInterceptor.init();
+    }
+
+    if (config.shakeToToggle) {
+      this.shakeDetector = new ShakeDetector({
+        threshold: config.shakeThreshold ?? 12,
+        onShake: () => {
+          this.store.toggleOpen();
+        },
+      });
+      this.shakeDetector.start();
+    }
+
     // Render Floating Badge & Drawer UI Elements into Shadow DOM Container
     this.badgeView = new FloatingBadgeView(this.store);
     const badgeElement = this.badgeView.render();
@@ -110,6 +134,10 @@ export class MobileDevToolsEngine {
   }
 
   public destroy() {
+    if (this.shakeDetector) {
+      this.shakeDetector.stop();
+      this.shakeDetector = null;
+    }
     if (this.badgeView) {
       this.badgeView.destroy();
       this.badgeView = null;
@@ -129,6 +157,14 @@ export class MobileDevToolsEngine {
     if (this.networkInterceptor) {
       this.networkInterceptor.restore();
       this.networkInterceptor = null;
+    }
+    if (this.wsInterceptor) {
+      this.wsInterceptor.restore();
+      this.wsInterceptor = null;
+    }
+    if (this.sseInterceptor) {
+      this.sseInterceptor.restore();
+      this.sseInterceptor = null;
     }
     if (this.shadowHostManager) {
       this.shadowHostManager.unmount();

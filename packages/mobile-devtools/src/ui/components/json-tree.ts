@@ -1,3 +1,5 @@
+import { formatCount } from '../../core';
+
 export function renderJsonTree(data: any, indentLevel = 0): HTMLElement {
   const container = document.createElement('div');
   container.className = 'devtools-json-container';
@@ -51,7 +53,7 @@ export function renderJsonTree(data: any, indentLevel = 0): HTMLElement {
 
     const label = document.createElement('span');
     label.className = 'devtools-json-key';
-    label.textContent = isArray ? `Array(${count})` : `Object{${count}}`;
+    label.textContent = isArray ? `Array(${formatCount(count)})` : `Object{${formatCount(count)}}`;
 
     toggle.appendChild(arrow);
     toggle.appendChild(label);

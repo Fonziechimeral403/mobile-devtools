@@ -1,3 +1,9 @@
+/**
+ * Converts JSON objects or raw JSON strings into syntax-highlighted HTML string representation.
+ * Uses CSS CSS variables (`--json-key`, `--json-string`, `--json-number`, `--json-boolean`, `--json-null`).
+ * @param data JSON object or raw JSON string.
+ * @returns HTML string with inline syntax highlighted spans.
+ */
 export function highlightJsonSyntax(data: any): string {
   if (data === null || data === undefined) return '';
 

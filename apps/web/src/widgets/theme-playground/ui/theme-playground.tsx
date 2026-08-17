@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 'use client';
 
 import React, { useState, useRef } from 'react';
@@ -17,6 +18,8 @@ export const ThemePlayground: React.FC = () => {
   const [cardBg, setCardBg] = useState('');
   const [defaultOpenConfig, setDefaultOpenConfig] = useState(false);
   const [autoSnapBadge, setAutoSnapBadge] = useState(false);
+  const [showBadge, setShowBadge] = useState(true);
+  const [shakeToToggle, setShakeToToggle] = useState(true);
   const [maxLogLimit, setMaxLogLimit] = useState(200);
   const [enabledTabs, setEnabledTabs] = useState<DevToolsTabId[]>([
     'console',
@@ -115,6 +118,8 @@ export const ThemePlayground: React.FC = () => {
       `  initialTab="${initialTab}"`,
       `  defaultOpen={${defaultOpenConfig}}`,
       `  autoSnapBadge={${autoSnapBadge}}`,
+      showBadge === false ? `  showBadge={false}` : null,
+      shakeToToggle ? `  shakeToToggle={true}` : null,
       `  enabledTabs={[${enabledTabs.map((t) => `'${t}'`).join(', ')}]}`,
       `  theme={{\n    mode: '${mode}',\n    accentColor: '${accentColor || '#38bdf8'}',\n    backgroundColor: '${bgColor || '#0f172a'}',\n    cardBackgroundColor: '${cardBg || '#1e293b'}'\n  }}`,
       `  interceptors={{\n    maxLogLimit: ${maxLogLimit},\n    maxNetworkLimit: 100,\n    enableConsoleInterceptor: true,\n    enableFetchInterceptor: true,\n    enableXhrInterceptor: true\n  }}`,
@@ -168,6 +173,20 @@ export const ThemePlayground: React.FC = () => {
           <span className="text-syntax-keyword">{autoSnapBadge ? 'true' : 'false'}</span>
           {'}'}
         </div>
+        {showBadge === false && (
+          <div className="pl-4">
+            <span className="text-syntax-parameter">showBadge</span>={'{'}
+            <span className="text-syntax-keyword">false</span>
+            {'}'}
+          </div>
+        )}
+        {shakeToToggle && (
+          <div className="pl-4">
+            <span className="text-syntax-parameter">shakeToToggle</span>={'{'}
+            <span className="text-syntax-keyword">true</span>
+            {'}'}
+          </div>
+        )}
         <div className="pl-4">
           <span className="text-syntax-parameter">enabledTabs</span>={'{'}[
           {enabledTabs.map((t, idx) => (
@@ -260,6 +279,8 @@ export const ThemePlayground: React.FC = () => {
         position={position}
         initialTab={initialTab}
         autoSnapBadge={autoSnapBadge}
+        showBadge={showBadge}
+        shakeToToggle={shakeToToggle}
         enabledTabs={enabledTabs}
         theme={{
           mode,
@@ -571,7 +592,7 @@ export const ThemePlayground: React.FC = () => {
           </div>
 
           {/* Custom Styled Checkboxes */}
-          <div className="flex items-center gap-6 pt-1">
+          <div className="flex flex-wrap items-center gap-y-3 gap-x-6 pt-1">
             <button
               type="button"
               onClick={() => setDefaultOpenConfig(!defaultOpenConfig)}
@@ -605,6 +626,40 @@ export const ThemePlayground: React.FC = () => {
               </span>
               <span>autoSnapBadge</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => setShowBadge(!showBadge)}
+              className="flex items-center gap-2 text-xs font-sans font-medium text-dev-text-bright cursor-pointer select-none"
+            >
+              <span
+                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                  showBadge
+                    ? 'bg-sky-500 border-sky-500 text-white'
+                    : 'bg-dev-bg-300 border-dev-border text-transparent hover:border-sky-500'
+                }`}
+              >
+                <Check className="w-3 h-3 stroke-3" />
+              </span>
+              <span>showBadge</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShakeToToggle(!shakeToToggle)}
+              className="flex items-center gap-2 text-xs font-sans font-medium text-dev-text-bright cursor-pointer select-none"
+            >
+              <span
+                className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                  shakeToToggle
+                    ? 'bg-sky-500 border-sky-500 text-white'
+                    : 'bg-dev-bg-300 border-dev-border text-transparent hover:border-sky-500'
+                }`}
+              >
+                <Check className="w-3 h-3 stroke-3" />
+              </span>
+              <span>shakeToToggle</span>
+            </button>
           </div>
         </div>
 
@@ -628,7 +683,7 @@ export const ThemePlayground: React.FC = () => {
               ) : (
                 <>
                   <Copy className="w-3 h-3 text-dev-text-muted" />
-                  <span>Copy Configuration</span>
+                  <span>Copy</span>
                 </>
               )}
             </button>

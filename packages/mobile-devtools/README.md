@@ -1,28 +1,49 @@
-# mobile-devtools
+# Mobile DevTools
 
 > **Next-Gen Framework-Agnostic In-App Mobile Debugger & Inspector Overlay for Web Applications**
 
 [![Bundle Size](https://img.shields.io/badge/Bundle_Size-~2.0_kB_gzipped-10b981.svg)](https://bundlephobia.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6.svg)](https://www.typescriptlang.org/)
+[![Turborepo](https://img.shields.io/badge/Monorepo-Turborepo-ef4444.svg)](https://turbo.build/)
 [![React](https://img.shields.io/badge/Adapter-React_18%2F19-61dafb.svg)](https://react.dev/)
 [![Vue](https://img.shields.io/badge/Adapter-Vue_3-42b883.svg)](https://vuejs.org/)
+[![Svelte](https://img.shields.io/badge/Adapter-Svelte_4%2F5-ff3e00.svg)](https://svelte.dev/)
 [![Vanilla JS](https://img.shields.io/badge/Adapter-Vanilla_JS-f7df1e.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
 ---
 
 ## 📌 Table of Contents
 
+- [📚 Comprehensive Documentation Suite](./docs)
+- [📸 Showcase](#-showcase)
 - [💡 Motivation & Why Use It?](#-motivation--why-use-it)
 - [✨ Core Capabilities](#-core-capabilities)
 - [🏗️ Technical Architecture](#%EF%B8%8F-technical-architecture)
 - [🚀 Framework Quickstart](#-framework-quickstart)
   - [⚛️ React Integration](#%EF%B8%8F-react-integration)
   - [💚 Vue 3 Integration](#-vue-3-integration)
+  - [🧡 Svelte 4/5 Integration](#-svelte-45-integration)
   - [🍦 Vanilla JS / Legacy Apps](#-vanilla-js--legacy-apps)
 - [⚙️ Full Configuration & Props Reference](#%EF%B8%8F-full-configuration--props-reference)
 - [🎨 Theme Engine & Customization](#-theme-engine--customization)
+- [📂 Monorepo Structure](#-monorepo-structure)
+- [🛠️ Development Setup](#%EF%B8%8F-development-setup)
 - [📄 License](#-license)
+
+---
+
+## 📸 Showcase
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/console.png" width="31%" alt="Console Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/elements.png" width="31%" alt="Elements Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/network.png" width="31%" alt="Network Tab" />
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/storage.png" width="31%" alt="Storage Tab" />
+  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/system.png" width="31%" alt="System Tab" />
+</p>
 
 ---
 
@@ -55,28 +76,28 @@ Debugging mobile web applications or QA staging builds on physical smartphones, 
 - 🎨 **Granular UI Style Overrides (`styles`)**: Fine-grained inline CSS style overrides for badge, drawer, overlay, and handle (`styles={{ badge: {}, drawer: {}, overlay: {} }}`).
 - 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection, accent color swatches, and custom background palettes.
 - 🧪 **Comprehensive Test Suite**: Tested with **65 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
-- 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, and **Vanilla JS**.
+- 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, **Svelte 4/5**, and **Vanilla JS**.
 
 ---
 
 ## 🏗️ Technical Architecture
 
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                          mobile-devtools                               │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-           ┌────────────────────────┼────────────────────────┐
-           ▼                        ▼                        ▼
-      Vanilla JS                  React                    Vue 3
-  (mobile-devtools)        (mobile-devtools/react)   (mobile-devtools/vue)
-           │                        │                        │
-           └────────────────────────┼────────────────────────┘
-                                    │
-                      ┌─────────────▼─────────────┐
-                      │   Native Shadow DOM Host  │
-                      │   <mobile-devtools-root>  │
-                      └─────────────┬─────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                 mobile-devtools                                 │
+└────────────────────────────────────────┬────────────────────────────────────────┘
+                                         │
+        ┌───────────────────┬────────────┴───────────┬───────────────────┐
+        ▼                   ▼                        ▼                   ▼
+   Vanilla JS             React                    Vue 3              Svelte
+(mobile-devtools) (mobile-devtools/react)  (mobile-devtools/vue) (mobile-devtools/svelte)
+        │                   │                        │                   │
+        └───────────────────┴────────────┬───────────┴───────────────────┘
+                                         │
+                           ┌─────────────▼─────────────┐
+                           │   Native Shadow DOM Host  │
+                           │   <mobile-devtools-root>  │
+                           └─────────────┬─────────────┘
                                     │
             ┌───────────────────────┴───────────────────────┐
             │                                               │
@@ -178,6 +199,45 @@ Import from `mobile-devtools/vue`:
 
 ---
 
+### 🔥 Svelte Integration
+
+Import from `mobile-devtools/svelte`:
+
+```svelte
+<script>
+  import { mobileDevTools } from 'mobile-devtools/svelte';
+</script>
+
+<div use:mobileDevTools={{
+  title: 'My App Debugger',
+  position: 'bottom-right',
+  shakeToToggle: true,
+  theme: { mode: 'dark' }
+}}>
+  <YourAppLayout />
+</div>
+```
+
+### 🧡 Svelte 4/5 Integration
+
+Import from `mobile-devtools/svelte`:
+
+```svelte
+<script>
+  import { useMobileDevTools } from 'mobile-devtools/svelte';
+</script>
+
+<div use:useMobileDevTools={{
+  title: 'My App Debugger',
+  position: 'bottom-right',
+  theme: { mode: 'dark', accentColor: '#0070f3' }
+}}>
+  <YourAppLayout />
+</div>
+```
+
+---
+
 ### 🍦 Vanilla JS / Legacy Apps
 
 Import directly from `mobile-devtools`:
@@ -216,25 +276,25 @@ const devtools = createMobileDevTools({
 
 Below is the complete reference table for all configuration options supported by `<MobileDevTools />` / `createMobileDevTools()`:
 
-| Option / Prop               | Type                    | Default                                                      | Description                                                                                                                           |
-| :-------------------------- | :---------------------- | :----------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
-| `enabled`                   | `boolean`               | `true` (in dev)                                              | Enable or disable the DevTools overlay. Automatically set to `false` in production builds.                                            |
-| `forceEnable`               | `boolean`               | `false`                                                      | Force enable DevTools overlay in production builds for QA testing & staging previews.                                                 |
-| `title`                     | `string`                | `'DevTools'`                                                 | Label shown on floating badge and drawer header                                                                                       |
-| `icon`                      | `string`                | `undefined`                                                  | Custom icon (Emoji string like `'⚡'`, Image URL, or Base64 data URI)                                                                 |
-| `position`                  | `BadgePositionPreset`   | `'bottom-right'`                                             | Initial corner/edge preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'`, `'bottom'`, `'top'`, `'left'`, `'right'`) |
-| `initialTab`                | `DevToolsTabId`         | `'console'`                                                  | Default tab opened when drawer is triggered (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`)                         |
-| `enabledTabs`               | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']`    | Filter which tabs are enabled in drawer                                                                                               |
-| `customTabs`                | `CustomTabDefinition[]` | `[]`                                                         | Pluggable consumer tabs with custom DOM rendering callback (`render(container)`)                                                      |
-| `styles`                    | `DevToolsStyles`        | `undefined`                                                  | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
-| `defaultOpen`               | `boolean`               | `false`                                                      | Set to `true` to open drawer automatically on mount                                                                                   |
-| `autoSnapBadge`             | `boolean`               | `false`                                                      | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
-| `theme.mode`                | `'dark' \| 'light'`     | `'dark'`                                                     | Theme mode                                                                                                                            |
-| `theme.accentColor`         | `string`                | `undefined`                                                  | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
-| `theme.backgroundColor`     | `string`                | `undefined`                                                  | Custom background color for drawer and badge                                                                                          |
-| `theme.cardBackgroundColor` | `string`                | `undefined`                                                  | Custom background color for inner card elements                                                                                       |
-| `privacy.mask`              | `string[]`              | `undefined`                                                  | Sensitive header & body keys to mask in network inspector (e.g. `['token', 'password']`)                               |
-| `interceptors.maxLogLimit`  | `number`                | `200`                                                        | Maximum number of console logs stored in buffer                                                                                       |
+| Option / Prop               | Type                    | Default                                                   | Description                                                                                                                           |
+| :-------------------------- | :---------------------- | :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`                   | `boolean`               | `true` (in dev)                                           | Enable or disable the DevTools overlay. Automatically set to `false` in production builds.                                            |
+| `forceEnable`               | `boolean`               | `false`                                                   | Force enable DevTools overlay in production builds for QA testing & staging previews.                                                 |
+| `title`                     | `string`                | `'DevTools'`                                              | Label shown on floating badge and drawer header                                                                                       |
+| `icon`                      | `string`                | `undefined`                                               | Custom icon (Emoji string like `'⚡'`, Image URL, or Base64 data URI)                                                                 |
+| `position`                  | `BadgePositionPreset`   | `'bottom-right'`                                          | Initial corner/edge preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'`, `'bottom'`, `'top'`, `'left'`, `'right'`) |
+| `initialTab`                | `DevToolsTabId`         | `'console'`                                               | Default tab opened when drawer is triggered (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`)                         |
+| `enabledTabs`               | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']` | Filter which tabs are enabled in drawer                                                                                               |
+| `customTabs`                | `CustomTabDefinition[]` | `[]`                                                      | Pluggable consumer tabs with custom DOM rendering callback (`render(container)`)                                                      |
+| `styles`                    | `DevToolsStyles`        | `undefined`                                               | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
+| `defaultOpen`               | `boolean`               | `false`                                                   | Set to `true` to open drawer automatically on mount                                                                                   |
+| `autoSnapBadge`             | `boolean`               | `false`                                                   | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
+| `theme.mode`                | `'dark' \| 'light'`     | `'dark'`                                                  | Theme mode                                                                                                                            |
+| `theme.accentColor`         | `string`                | `undefined`                                               | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
+| `theme.backgroundColor`     | `string`                | `undefined`                                               | Custom background color for drawer and badge                                                                                          |
+| `theme.cardBackgroundColor` | `string`                | `undefined`                                               | Custom background color for inner card elements                                                                                       |
+| `privacy.mask`              | `string[]`              | `undefined`                                               | Sensitive header & body keys to mask in network inspector (e.g. `['token', 'password']`)                                              |
+| `interceptors.maxLogLimit`  | `number`                | `200`                                                     | Maximum number of console logs stored in buffer                                                                                       |
 
 ---
 
@@ -261,6 +321,55 @@ Below is the complete reference table for all configuration options supported by
 
 ---
 
+## 📂 Monorepo Structure
+
+```
+mobile-devtools/
+├── apps/
+│   └── web/                    # React documentation & live playground app (Port 3000)
+├── examples/
+│   ├── react/                  # React 19 test harness app (Port 3001)
+│   ├── vue/                    # Vue 3 test harness app (Port 3002)
+│   └── vanilla/                # Vanilla JS test harness app (Port 3003)
+└── packages/
+    ├── mobile-devtools/        # Main unified published npm package (Core + UI + React/Vue/Vanilla Adapters)
+    └── config/
+        ├── eslint/             # Shared ESLint configuration (@mobile-devtools/eslint-config)
+        └── typescript/         # Shared TypeScript configuration (@mobile-devtools/tsconfig)
+```
+
+---
+
+## 🛠️ Development Setup
+
+To build and run the project locally:
+
+```bash
+# Clone repository
+git clone https://github.com/dewasemadi/mobile-devtools.git
+cd mobile-devtools
+
+# Install dependencies using pnpm
+pnpm install
+
+# Launch all apps & package watchers in dev mode
+pnpm dev
+
+# Run unit test suite (65 tests)
+pnpm test
+
+# Run unit tests with V8 coverage report
+pnpm test:coverage
+
+# Run Playwright E2E tests (21 tests across Chromium & Mobile Webkit)
+pnpm test:e2e
+
+# Build production bundles
+pnpm build
+```
+
+---
+
 ## 📄 License
 
-Distributed under the **MIT License**.
+Distributed under the **MIT License**. See [LICENSE](./LICENSE) for details.

@@ -1,11 +1,17 @@
 import { BADGE_POSITIONS, BadgePositionPreset } from '../constants';
 import { isBrowser, isServer } from './env';
 
+/**
+ * 2D Screen coordinates for dragging elements.
+ */
 export interface DragPosition {
   x: number;
   y: number;
 }
 
+/**
+ * Viewport boundaries for constraining drag interactions.
+ */
 export interface DragBounds {
   minX: number;
   maxX: number;
@@ -13,6 +19,14 @@ export interface DragBounds {
   maxY: number;
 }
 
+/**
+ * Clamps coordinates within the visible screen viewport.
+ * @param pos Current drag position.
+ * @param elementWidth Width of element.
+ * @param elementHeight Height of element.
+ * @param margin Minimum edge margin.
+ * @returns Clamped DragPosition coordinates.
+ */
 export function clampPositionToViewport(
   pos: DragPosition,
   elementWidth = 125,
@@ -32,6 +46,16 @@ export function clampPositionToViewport(
   };
 }
 
+/**
+ * Calculates snapped X/Y position to snap floating badge to the left or right screen edge.
+ * @param currentPos Current drag position.
+ * @param elementWidth Element width.
+ * @param elementHeight Element height.
+ * @param viewportWidth Screen viewport width.
+ * @param viewportHeight Screen viewport height.
+ * @param margin Edge padding margin.
+ * @returns Snapped DragPosition coordinates.
+ */
 export function calculateSnapPosition(
   currentPos: DragPosition,
   elementWidth: number,
@@ -55,6 +79,14 @@ export function calculateSnapPosition(
   };
 }
 
+/**
+ * Computes default screen pixel coordinates based on a position preset (e.g. 'bottom-right').
+ * @param positionPreset Position preset string or custom coordinates.
+ * @param badgeWidth Badge element width.
+ * @param badgeHeight Badge element height.
+ * @param margin Edge margin padding.
+ * @returns Calculated DragPosition.
+ */
 export function getDefaultPosition(
   positionPreset: BadgePositionPreset | DragPosition = BADGE_POSITIONS.BOTTOM_RIGHT,
   badgeWidth = 125,

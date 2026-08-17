@@ -19,6 +19,8 @@ export const LOG_LEVELS = {
 export const NETWORK_TYPES = {
   FETCH: 'fetch',
   XHR: 'xhr',
+  WEBSOCKET: 'websocket',
+  EVENTSOURCE: 'eventsource',
 } as const;
 
 export type NetworkRequestType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];

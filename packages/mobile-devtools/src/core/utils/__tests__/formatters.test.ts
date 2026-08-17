@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  formatCount,
   formatDuration,
   formatTimestamp,
   generateCurlCommand,
@@ -8,6 +9,18 @@ import {
 import { NetworkRequestEntry } from '../../types/network';
 
 describe('formatters utils', () => {
+  it('should format counters with max 99+ ceiling', () => {
+    expect(formatCount(0)).toBe('0');
+    expect(formatCount(-5)).toBe('0');
+    expect(formatCount(5)).toBe('5');
+    expect(formatCount(99)).toBe('99');
+    expect(formatCount(100)).toBe('99+');
+    expect(formatCount(1000)).toBe('99+');
+
+    // Custom limit
+    expect(formatCount(500, 999)).toBe('500');
+    expect(formatCount(1000, 999)).toBe('999+');
+  });
   it('should format durations properly', () => {
     expect(formatDuration(50)).toBe('50ms');
     expect(formatDuration(1500)).toBe('1.50s');

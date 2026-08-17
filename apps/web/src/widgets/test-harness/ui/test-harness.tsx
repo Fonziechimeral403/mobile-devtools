@@ -1,10 +1,29 @@
 'use client';
 
 import React from 'react';
-import { Terminal, Globe, Database, Play, AlertTriangle, AlertCircle } from 'lucide-react';
+import {
+  Terminal,
+  Globe,
+  Database,
+  Play,
+  AlertTriangle,
+  AlertCircle,
+  Zap,
+} from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 
 export const TestHarness: React.FC = () => {
+  const sseRef = React.useRef<EventSource | null>(null);
+  const [isSSESubscribed, setIsSSESubscribed] = React.useState(false);
+
+  React.useEffect(() => {
+    return () => {
+      if (sseRef.current) {
+        sseRef.current.close();
+        sseRef.current = null;
+      }
+    };
+  }, []);
   const triggerConsoleLog = () => {
     console.log('🚀 User triggered console log', {
       timestamp: new Date().toISOString(),
@@ -42,7 +61,11 @@ export const TestHarness: React.FC = () => {
       const res = await fetch('https://jsonplaceholder.typicode.com/posts/error-500', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: 'Simulated Danger Error', body: 'Testing 500 Internal Server Error', userId: 99 }),
+        body: JSON.stringify({
+          title: 'Simulated Danger Error',
+          body: 'Testing 500 Internal Server Error',
+          userId: 99,
+        }),
       });
       if (!res.ok) {
         console.error('🔥 POST /posts (500) Simulated Danger Error:', {
@@ -82,12 +105,84 @@ export const TestHarness: React.FC = () => {
     console.log('Set demo cookie entry');
   };
 
+  const triggerWebSocketDemo = () => {
+    try {
+      const ws = new WebSocket('wss://echo.websocket.org');
+      ws.onopen = () => {
+        console.log('⚡ WebSocket Connected to wss://echo.websocket.org');
+        ws.send(
+          JSON.stringify({
+            event: 'ping',
+            payload: { client: 'mobile-devtools-demo', timestamp: Date.now() },
+          })
+        );
+      };
+      ws.onmessage = (evt) => {
+        console.log('⚡ WebSocket Message Received:', evt.data);
+      };
+      ws.onerror = (err) => {
+        console.error('⚡ WebSocket Error:', err);
+      };
+    } catch (e) {
+      console.error('WebSocket simulation error:', e);
+    }
+  };
+
+  const toggleSSEDemo = () => {
+    if (isSSESubscribed && sseRef.current) {
+      sseRef.current.close();
+      sseRef.current = null;
+      setIsSSESubscribed(false);
+      console.log('📡 SSE Connection Closed by User');
+      return;
+    }
+
+    try {
+      const sseUrl = '/api/sse';
+      const es = new EventSource(sseUrl);
+      sseRef.current = es;
+      setIsSSESubscribed(true);
+
+      es.onopen = () => {
+        console.log(`📡 SSE Connection Established to ${sseUrl}`);
+      };
+      es.onmessage = (evt) => {
+        console.log('📡 SSE Stream Event Received:', evt.data);
+      };
+      es.onerror = (err) => {
+        console.warn('📡 SSE Connection Error / Closed:', err);
+      };
+    } catch (e) {
+      console.error('SSE simulation error:', e);
+    }
+  };
+
+  const triggerShakeDemo = () => {
+    // 1. Establish baseline rest acceleration
+    const baseEvt = Object.assign(new Event('devicemotion'), {
+      accelerationIncludingGravity: { x: 0, y: 0, z: 9.8 },
+    });
+    window.dispatchEvent(baseEvt);
+
+    // 2. Dispatch high acceleration motion burst
+    const shakeEvt = Object.assign(new Event('devicemotion'), {
+      accelerationIncludingGravity: { x: 25, y: 25, z: 25 },
+    });
+    window.dispatchEvent(shakeEvt);
+
+    console.log('📱 Simulated Device Shake Event Dispatched!');
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-4">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-dev-text-bright tracking-tight">Interactive Test Controls</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-dev-text-bright tracking-tight">
+          Interactive Test Controls
+        </h2>
         <p className="text-sm text-dev-text-muted">
-          Click any action button below and tap the floating <strong className="text-dev-text-bright">DevTools</strong> badge in the corner to inspect captured data!
+          Click any action button below and tap the floating{' '}
+          <strong className="text-dev-text-bright">DevTools</strong> badge in the corner to inspect
+          captured data!
         </p>
       </div>
 
@@ -98,17 +193,29 @@ export const TestHarness: React.FC = () => {
             <Terminal className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
             <h3 className="text-sm font-bold text-dev-text-bright">1. Console Interceptor Test</h3>
           </div>
-          <p className="text-xs text-dev-text-muted">Trigger console entries to test badge counter & stack trace formatting.</p>
+          <p className="text-xs text-dev-text-muted">
+            Trigger console entries to test badge counter & stack trace formatting.
+          </p>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={triggerConsoleLog}>
               <Play className="w-3.5 h-3.5 text-dev-text-muted" />
               <span>console.log()</span>
             </Button>
-            <Button size="sm" variant="secondary" className="text-amber-600 dark:text-amber-400" onClick={triggerConsoleWarn}>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="text-amber-600 dark:text-amber-400"
+              onClick={triggerConsoleWarn}
+            >
               <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               <span>console.warn()</span>
             </Button>
-            <Button size="sm" variant="secondary" className="text-rose-600 dark:text-rose-400" onClick={triggerConsoleError}>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="text-rose-600 dark:text-rose-400"
+              onClick={triggerConsoleError}
+            >
               <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
               <span>console.error()</span>
             </Button>
@@ -119,19 +226,33 @@ export const TestHarness: React.FC = () => {
         <div className="bg-dev-bg-300/80 border border-dev-border rounded-xl p-4 space-y-3">
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4 text-sky-500 dark:text-sky-400" />
-            <h3 className="text-sm font-bold text-dev-text-bright">2. Network (Fetch & XHR) Test</h3>
+            <h3 className="text-sm font-bold text-dev-text-bright">
+              2. Network (Fetch & XHR) Test
+            </h3>
           </div>
-          <p className="text-xs text-dev-text-muted">Trigger real HTTP requests to test timing, JSON body, & Copy cURL.</p>
+          <p className="text-xs text-dev-text-muted">
+            Trigger real HTTP requests to test timing, JSON body, & Copy cURL.
+          </p>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={triggerFetchSuccess}>
               <Play className="w-3.5 h-3.5 text-dev-text-muted" />
               <span>GET /users/1 (200)</span>
             </Button>
-            <Button size="sm" variant="secondary" className="text-amber-600 dark:text-amber-400" onClick={triggerFetch404}>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="text-amber-600 dark:text-amber-400"
+              onClick={triggerFetch404}
+            >
               <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               <span>PUT /posts/999999 (404)</span>
             </Button>
-            <Button size="sm" variant="secondary" className="text-rose-600 dark:text-rose-400" onClick={triggerFetchError}>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="text-rose-600 dark:text-rose-400"
+              onClick={triggerFetchError}
+            >
               <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
               <span>POST /posts (500 Danger)</span>
             </Button>
@@ -144,7 +265,10 @@ export const TestHarness: React.FC = () => {
             <Database className="w-4 h-4 text-purple-500 dark:text-purple-400" />
             <h3 className="text-sm font-bold text-dev-text-bright">3. Storage Inspector Test</h3>
           </div>
-          <p className="text-xs text-dev-text-muted">Mutate localStorage, sessionStorage, and document.cookie to test the Storage Inspector tab.</p>
+          <p className="text-xs text-dev-text-muted">
+            Mutate localStorage, sessionStorage, and document.cookie to test the Storage Inspector
+            tab.
+          </p>
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" onClick={setLocalStorageDemo}>
               <span>Set localStorage</span>
@@ -154,6 +278,34 @@ export const TestHarness: React.FC = () => {
             </Button>
             <Button size="sm" variant="secondary" onClick={setCookieDemo}>
               <span>Set Cookie</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* WebSocket, SSE & Motion Test Card */}
+        <div className="bg-dev-bg-300/80 border border-dev-border rounded-xl p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <Zap className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+            <h3 className="text-sm font-bold text-dev-text-bright">
+              4. WebSocket, SSE & Shake Motion Test
+            </h3>
+          </div>
+          <p className="text-xs text-dev-text-muted">
+            Simulate real-time WebSocket frames, EventSource streams, and device shake gesture.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="secondary" onClick={triggerWebSocketDemo}>
+              <span>Connect WebSocket</span>
+            </Button>
+            <Button
+              size="sm"
+              variant={isSSESubscribed ? 'danger' : 'secondary'}
+              onClick={toggleSSEDemo}
+            >
+              <span>{isSSESubscribed ? 'Unsubscribe EventSource' : 'Subscribe EventSource'}</span>
+            </Button>
+            <Button size="sm" variant="secondary" onClick={triggerShakeDemo}>
+              <span>Simulate Device Shake</span>
             </Button>
           </div>
         </div>

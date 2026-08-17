@@ -1,6 +1,11 @@
 import { NetworkRequestEntry } from '../types/network';
 import { isServer } from './env';
 
+/**
+ * Formats epoch millisecond timestamp into HH:MM:SS.mmm format.
+ * @param time Epoch timestamp in milliseconds.
+ * @returns Formatted time string, e.g. "14:32:05.120".
+ */
 export function formatTimestamp(time: number): string {
   const date = new Date(time);
   const hours = date.getHours().toString().padStart(2, '0');
@@ -10,12 +15,33 @@ export function formatTimestamp(time: number): string {
   return `${hours}:${minutes}:${seconds}.${ms}`;
 }
 
+/**
+ * Formats duration milliseconds into human-readable ms or seconds.
+ * @param durationMs Duration in milliseconds.
+ * @returns Formatted duration string, e.g. "45ms", "1.25s", or "pending".
+ */
 export function formatDuration(durationMs?: number): string {
   if (durationMs === undefined) return 'pending';
   if (durationMs < 1000) return `${Math.round(durationMs)}ms`;
   return `${(durationMs / 1000).toFixed(2)}s`;
 }
 
+/**
+ * Formats numeric count badges with a maximum cap.
+ * @param count Numeric count value.
+ * @param max Maximum display threshold (default: 99).
+ * @returns Formatted string count, e.g. "5", "99+", or "0".
+ */
+export function formatCount(count: number, max = 99): string {
+  if (typeof count !== 'number' || count <= 0) return '0';
+  return count > max ? `${max}+` : String(count);
+}
+
+/**
+ * Generates an executable cURL CLI command string from a captured network request entry.
+ * @param req Network request entry.
+ * @returns Formatted multi-line cURL command string.
+ */
 export function generateCurlCommand(req: NetworkRequestEntry): string {
   let curl = `curl -X ${req.method.toUpperCase()} "${req.url}"`;
 
@@ -35,6 +61,11 @@ export function generateCurlCommand(req: NetworkRequestEntry): string {
   return curl;
 }
 
+/**
+ * Internal helper to format request/response body payloads into formatted JSON or string summaries.
+ * @param body Raw body payload (object, string, or null).
+ * @returns Formatted summary string or 'None'.
+ */
 function formatBodySummary(body: unknown): string {
   if (body === undefined || body === null || body === '') {
     return 'None';
@@ -45,6 +76,11 @@ function formatBodySummary(body: unknown): string {
   return String(body);
 }
 
+/**
+ * Generates a complete text summary report of a captured HTTP request and response.
+ * @param req Network request entry.
+ * @returns Formatted plain text request/response summary.
+ */
 export function generateFullRequestSummary(req: NetworkRequestEntry): string {
   const payloadStr = formatBodySummary(req.requestBody);
   const responseStr = formatBodySummary(req.responseBody);
@@ -90,6 +126,10 @@ ${responseStr}
 `;
 }
 
+/**
+ * Parses current document.cookie string into a key-value object map.
+ * @returns Map of cookie key names to value strings.
+ */
 export function parseCookies(): Record<string, string> {
   const cookies: Record<string, string> = {};
   if (isServer || !document.cookie) return cookies;

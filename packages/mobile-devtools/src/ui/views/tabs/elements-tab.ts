@@ -1,4 +1,4 @@
-import { DevToolsStore, ElementsManager, isBrowser, STYLE_CATEGORIES } from '../../../core';
+import { DevToolsStore, ElementsManager, isBrowser } from '../../../core';
 import {
   CHEVRON_DOWN_ICON,
   CHEVRON_RIGHT_ICON,

@@ -12,6 +12,7 @@ export const buttonVariants = cva(
         outline: 'bg-transparent text-dev-text-bright border border-dev-border hover:bg-dev-bg-300',
         ghost: 'bg-transparent text-dev-text-muted hover:text-dev-text-bright hover:bg-dev-bg-300',
         contrast: 'bg-neutral-900 text-white dark:bg-neutral-950 dark:text-white hover:bg-neutral-800 dark:hover:bg-neutral-900 border-2 border-neutral-700 dark:border-neutral-600',
+        danger: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 font-semibold',
       },
       size: {
         sm: 'px-3 py-1.5 text-xs',

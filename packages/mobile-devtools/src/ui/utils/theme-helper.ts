@@ -1,5 +1,11 @@
 import { DevToolsTheme, ThemeMode } from '../../core';
 
+/**
+ * Calculates perceived color brightness using the YIQ formula to determine if a HEX color is light or dark.
+ * Used to automatically contrast UI text and card colors when custom background colors are applied.
+ * @param hex HEX color string (e.g. '#ffffff', '#121212', '#fff').
+ * @returns True if perceived brightness >= 128 (light color), false otherwise.
+ */
 function isLightColor(hex: string): boolean {
   if (!hex || typeof hex !== 'string') return false;
   const color = hex.replace('#', '');
@@ -25,6 +31,13 @@ function isLightColor(hex: string): boolean {
   return yiq >= 128;
 }
 
+/**
+ * Applies custom theme CSS variable overrides to the DevTools Shadow DOM container element.
+ * Automatically calculates contrast text/card colors if custom background color is provided.
+ * @param container Target DevTools Shadow DOM container element.
+ * @param theme Custom theme configuration object.
+ * @param effectiveMode Effective calculated theme mode ('dark' or 'light').
+ */
 export function applyThemeVariables(
   container: HTMLElement,
   theme?: DevToolsTheme,
@@ -129,6 +142,10 @@ export function applyThemeVariables(
   }
 }
 
+/**
+ * Internal helper to remove custom theme CSS custom properties from Shadow DOM container.
+ * @param container Target DevTools Shadow DOM container element.
+ */
 function clearAllThemeOverrides(container: HTMLElement) {
   container.style.removeProperty('--dev-bg');
   container.style.removeProperty('--dev-bg-200');

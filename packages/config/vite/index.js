@@ -10,6 +10,7 @@ export function getDevToolsAliases(rootDir, relativeMonorepoRoot = '../..') {
   return {
     'mobile-devtools/react': resolve(monorepoRoot, 'packages/mobile-devtools/src/react.ts'),
     'mobile-devtools/vue': resolve(monorepoRoot, 'packages/mobile-devtools/src/vue.ts'),
+    'mobile-devtools/svelte': resolve(monorepoRoot, 'packages/mobile-devtools/src/svelte.ts'),
     'mobile-devtools/package.json': resolve(monorepoRoot, 'packages/mobile-devtools/package.json'),
     'mobile-devtools$': resolve(monorepoRoot, 'packages/mobile-devtools/src/index.ts'),
   };

@@ -4,6 +4,7 @@ import {
   DevToolsStore,
   DevToolsTabId,
   exportBugReport,
+  formatCount,
   THEME_MODES,
 } from '../../core';
 import { CLOSE_ICON, LOGO_ICON, MOON_ICON, SHARE_ICON, SUN_ICON } from '../icons';
@@ -31,10 +32,11 @@ export class DrawerView {
   private storageTab: StorageTabView;
   private systemTab: SystemTabView;
 
-  // Swipe Dismiss State
+  // Swipe Dismiss & Tab Scroll State
   private dragOffsetY = 0;
   private isSwiping = false;
   private swipeStartY: number | null = null;
+  private tabsScrollLeft = 0;
 
   constructor(store: DevToolsStore) {
     this.store = store;
@@ -244,7 +246,7 @@ export class DrawerView {
     const pillTitle = config.title || 'Mobile DevTools';
     const errorPill =
       unread.errors > 0
-        ? `<span class="devtools-pill-badge error">${unread.errors} Errors</span>`
+        ? `<span class="devtools-pill-badge error">${formatCount(unread.errors)} Errors</span>`
         : '';
 
     titleGroup.innerHTML = `
@@ -300,9 +302,14 @@ export class DrawerView {
     this.attachSwipeListeners(header);
 
     // Segmented Tabs Bar
+    const prevTabsScrollLeft = this.tabsScrollLeft;
     const tabsBar = document.createElement('div');
     tabsBar.className = 'devtools-tabs-bar';
     setupScrollLockGuard(tabsBar);
+
+    tabsBar.addEventListener('scroll', () => {
+      this.tabsScrollLeft = tabsBar.scrollLeft;
+    });
 
     const enabledTabs = config.enabledTabs || [
       BUILTIN_TABS.CONSOLE,
@@ -359,6 +366,12 @@ export class DrawerView {
     this.drawerElement.appendChild(header);
     this.drawerElement.appendChild(tabsBar);
     this.drawerElement.appendChild(this.tabContentContainer);
+
+    requestAnimationFrame(() => {
+      if (tabsBar) {
+        tabsBar.scrollLeft = prevTabsScrollLeft;
+      }
+    });
   }
 
   public destroy() {

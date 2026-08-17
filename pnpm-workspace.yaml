@@ -18,6 +18,8 @@ catalogs:
     'typescript': '5.9.2'
     'vite': '^6.1.0'
     'vite-plugin-dts': '^5.0.3'
+    'svelte': '^5.0.0'
+    '@sveltejs/vite-plugin-svelte': '^5.0.0'
     'vue': '^3.5.0'
     'vue-tsc': '^2.2.0'
     'vitest': '^3.0.7'

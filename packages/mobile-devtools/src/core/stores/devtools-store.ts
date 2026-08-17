@@ -288,9 +288,24 @@ export class DevToolsStore {
       };
       this.networkRequests[index] = updated;
 
-      if (!this.isOpen && (updated.status >= 400 || updated.errorState === 'error')) {
+      if (!this.isOpen && updates.status && updates.status >= 400) {
         this.unreadErrorCount++;
       }
+
+      this.notify();
+    }
+  }
+
+  public addNetworkFrame(id: string, frame: import('../types/network').NetworkFrameMessage) {
+    const index = this.networkRequests.findIndex((r) => r.id === id);
+    if (index !== -1 && this.networkRequests[index]) {
+      const existing = this.networkRequests[index];
+      const frames = [...(existing.frames || []), frame];
+      if (frames.length > 200) frames.shift();
+      this.networkRequests[index] = {
+        ...existing,
+        frames,
+      };
       this.notify();
     }
   }

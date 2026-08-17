@@ -2,12 +2,23 @@ import { DevToolsStore } from '../stores/devtools-store';
 import { copyToClipboard } from './clipboard';
 import { isBrowser } from './env';
 
+/**
+ * Result metrics returned after running a bug report export operation.
+ */
 export interface BugReportResult {
+  /** True if native OS Web Share API dialog was successfully invoked */
   shared: boolean;
+  /** True if a file download trigger was executed */
   downloaded: boolean;
+  /** True if the bug report text was successfully copied to clipboard */
   copied: boolean;
 }
 
+/**
+ * Generates a clean plain text report containing system specs, captured console logs, and network requests.
+ * @param store DevTools store instance.
+ * @returns Plain text formatted bug report.
+ */
 export function generateBugReportText(store: DevToolsStore): string {
   const config = store.getConfig();
   const logs = store.getLogs();
@@ -88,6 +99,11 @@ NETWORK SUMMARY (${network.length} Total | ${failedReqCount} Failed)
   return text;
 }
 
+/**
+ * Triggers native mobile share dialog (Web Share API) or fallback file download + clipboard copy.
+ * @param store DevTools store instance.
+ * @returns Result status object.
+ */
 export async function exportBugReport(store: DevToolsStore): Promise<BugReportResult> {
   const reportText = generateBugReportText(store);
   const fileName = `bug-report-${Date.now()}.txt`;

@@ -1,3 +1,10 @@
+/**
+ * Recursively masks sensitive key values (e.g. passwords, auth tokens) in objects or primitive strings.
+ * @param value Target payload or object.
+ * @param keyName Optional property key name.
+ * @param maskKeys Array of key substrings to mask (case-insensitive).
+ * @returns Masked object payload or string "****** (Masked)".
+ */
 export function maskSensitiveValue(
   value: any,
   keyName = '',
