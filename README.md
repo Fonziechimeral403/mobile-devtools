@@ -15,6 +15,7 @@
 ## 📌 Table of Contents
 
 - [📚 Comprehensive Documentation Suite](./docs)
+- [📸 Showcase](#-showcase)
 - [💡 Motivation & Why Use It?](#-motivation--why-use-it)
 - [✨ Core Capabilities](#-core-capabilities)
 - [🏗️ Technical Architecture](#%EF%B8%8F-technical-architecture)
@@ -27,6 +28,20 @@
 - [📂 Monorepo Structure](#-monorepo-structure)
 - [🛠️ Development Setup](#%EF%B8%8F-development-setup)
 - [📄 License](#-license)
+
+---
+
+## 📸 Showcase
+
+<p align="center">
+  <img src="./docs/assets/console.png" width="31%" alt="Console Tab" />
+  <img src="./docs/assets/elements.png" width="31%" alt="Elements Tab" />
+  <img src="./docs/assets/network.png" width="31%" alt="Network Tab" />
+</p>
+<p align="center">
+  <img src="./docs/assets/storage.png" width="31%" alt="Storage Tab" />
+  <img src="./docs/assets/system.png" width="31%" alt="System Tab" />
+</p>
 
 ---
 
@@ -220,25 +235,25 @@ const devtools = createMobileDevTools({
 
 Below is the complete reference table for all configuration options supported by `<MobileDevTools />` / `createMobileDevTools()`:
 
-| Option / Prop               | Type                    | Default                                                      | Description                                                                                                                           |
-| :-------------------------- | :---------------------- | :----------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
-| `enabled`                   | `boolean`               | `true` (in dev)                                              | Enable or disable the DevTools overlay. Automatically set to `false` in production builds.                                            |
-| `forceEnable`               | `boolean`               | `false`                                                      | Force enable DevTools overlay in production builds for QA testing & staging previews.                                                 |
-| `title`                     | `string`                | `'DevTools'`                                                 | Label shown on floating badge and drawer header                                                                                       |
-| `icon`                      | `string`                | `undefined`                                                  | Custom icon (Emoji string like `'⚡'`, Image URL, or Base64 data URI)                                                                 |
-| `position`                  | `BadgePositionPreset`   | `'bottom-right'`                                             | Initial corner/edge preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'`, `'bottom'`, `'top'`, `'left'`, `'right'`) |
-| `initialTab`                | `DevToolsTabId`         | `'console'`                                                  | Default tab opened when drawer is triggered (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`)                         |
-| `enabledTabs`               | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']`    | Filter which tabs are enabled in drawer                                                                                               |
-| `customTabs`                | `CustomTabDefinition[]` | `[]`                                                         | Pluggable consumer tabs with custom DOM rendering callback (`render(container)`)                                                      |
-| `styles`                    | `DevToolsStyles`        | `undefined`                                                  | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
-| `defaultOpen`               | `boolean`               | `false`                                                      | Set to `true` to open drawer automatically on mount                                                                                   |
-| `autoSnapBadge`             | `boolean`               | `false`                                                      | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
-| `theme.mode`                | `'dark' \| 'light'`     | `'dark'`                                                     | Theme mode                                                                                                                            |
-| `theme.accentColor`         | `string`                | `undefined`                                                  | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
-| `theme.backgroundColor`     | `string`                | `undefined`                                                  | Custom background color for drawer and badge                                                                                          |
-| `theme.cardBackgroundColor` | `string`                | `undefined`                                                  | Custom background color for inner card elements                                                                                       |
-| `privacy.mask`              | `string[]`              | `undefined`                                                  | Sensitive header & body keys to mask in network inspector (e.g. `['token', 'password']`)                               |
-| `interceptors.maxLogLimit`  | `number`                | `200`                                                        | Maximum number of console logs stored in buffer                                                                                       |
+| Option / Prop               | Type                    | Default                                                   | Description                                                                                                                           |
+| :-------------------------- | :---------------------- | :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`                   | `boolean`               | `true` (in dev)                                           | Enable or disable the DevTools overlay. Automatically set to `false` in production builds.                                            |
+| `forceEnable`               | `boolean`               | `false`                                                   | Force enable DevTools overlay in production builds for QA testing & staging previews.                                                 |
+| `title`                     | `string`                | `'DevTools'`                                              | Label shown on floating badge and drawer header                                                                                       |
+| `icon`                      | `string`                | `undefined`                                               | Custom icon (Emoji string like `'⚡'`, Image URL, or Base64 data URI)                                                                 |
+| `position`                  | `BadgePositionPreset`   | `'bottom-right'`                                          | Initial corner/edge preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'`, `'bottom'`, `'top'`, `'left'`, `'right'`) |
+| `initialTab`                | `DevToolsTabId`         | `'console'`                                               | Default tab opened when drawer is triggered (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`)                         |
+| `enabledTabs`               | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']` | Filter which tabs are enabled in drawer                                                                                               |
+| `customTabs`                | `CustomTabDefinition[]` | `[]`                                                      | Pluggable consumer tabs with custom DOM rendering callback (`render(container)`)                                                      |
+| `styles`                    | `DevToolsStyles`        | `undefined`                                               | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
+| `defaultOpen`               | `boolean`               | `false`                                                   | Set to `true` to open drawer automatically on mount                                                                                   |
+| `autoSnapBadge`             | `boolean`               | `false`                                                   | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
+| `theme.mode`                | `'dark' \| 'light'`     | `'dark'`                                                  | Theme mode                                                                                                                            |
+| `theme.accentColor`         | `string`                | `undefined`                                               | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
+| `theme.backgroundColor`     | `string`                | `undefined`                                               | Custom background color for drawer and badge                                                                                          |
+| `theme.cardBackgroundColor` | `string`                | `undefined`                                               | Custom background color for inner card elements                                                                                       |
+| `privacy.mask`              | `string[]`              | `undefined`                                               | Sensitive header & body keys to mask in network inspector (e.g. `['token', 'password']`)                                              |
+| `interceptors.maxLogLimit`  | `number`                | `200`                                                     | Maximum number of console logs stored in buffer                                                                                       |
 
 ---
 
