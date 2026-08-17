@@ -7,7 +7,6 @@
     "dev": "vite --port 3000",
     "prebuild": "pnpm --filter mobile-devtools build",
     "build": "tsc && vite build",
-    "postbuild": "rimraf dist/client/_redirects",
     "preview": "vite preview",
     "lint": "eslint --max-warnings 0",
     "check-types": "tsc --noEmit",

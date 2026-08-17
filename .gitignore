@@ -12,6 +12,7 @@ out
 
 # Turbo & Tooling
 .turbo
+.wrangler
 
 # Environment Variables
 .env

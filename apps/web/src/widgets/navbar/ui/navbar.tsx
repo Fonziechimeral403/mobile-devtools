@@ -6,6 +6,7 @@ import { Smartphone } from 'lucide-react';
 import { GithubIcon } from '@/shared/ui/icons/github-icon';
 import { Button } from '@/shared/ui/button';
 import { ThemeToggle } from '@/features/theme-toggle/ui/theme-toggle';
+import { URLS } from '@/shared/constants';
 import { VERSION } from 'mobile-devtools';
 
 export const Navbar: React.FC = () => {
@@ -31,7 +32,7 @@ export const Navbar: React.FC = () => {
           <ThemeToggle />
 
           {/* GitHub Button */}
-          <a href="https://github.com" target="_blank" rel="noreferrer">
+          <a href={URLS.GITHUB} target="_blank" rel="noreferrer">
             <Button variant="primary" size="sm">
               <GithubIcon className="w-4 h-4 fill-current shrink-0" />
               <span>GitHub</span>

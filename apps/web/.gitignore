@@ -9,6 +9,7 @@ build/
 # Vite & Turbo cache
 .vite/
 .turbo/
+.wrangler/
 
 # Logs
 npm-debug.log*

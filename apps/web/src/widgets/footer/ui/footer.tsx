@@ -4,6 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Smartphone, ShieldCheck, ExternalLink } from 'lucide-react';
 import { GithubIcon } from '@/shared/ui/icons/github-icon';
+import { URLS } from '@/shared/constants';
 
 export const Footer: React.FC = () => {
   return (
@@ -75,7 +76,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
                 <a
-                  href="https://github.com"
+                  href={URLS.GITHUB}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-dev-text-bright transition-colors inline-flex items-center gap-1.5 font-medium"
@@ -87,7 +88,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="https://npmjs.com/package/mobile-devtools"
+                  href={URLS.NPM}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-dev-text-bright transition-colors inline-flex items-center gap-1.5 font-medium"
