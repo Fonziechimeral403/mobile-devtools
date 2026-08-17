@@ -65,30 +65,34 @@ Debugging mobile web applications or QA staging builds on physical smartphones, 
 
 ## 🏗️ Technical Architecture
 
-```mermaid
-graph TD
-    A["mobile-devtools"] --> B["Core Engine & Store"]
-    A --> C["Shadow DOM UI Engine"]
-    A --> D["Subpath Exports"]
-    D --> E["mobile-devtools (Vanilla JS)"]
-    D --> F["mobile-devtools/react (React)"]
-    D --> G["mobile-devtools/vue (Vue 3)"]
-
-    subgraph Core Features
-        A1[Console Interceptor]
-        A2[Fetch / XHR Interceptor]
-        A3[Elements Manager]
-        A4[Storage Listener]
-        A5[DevTools Store & State]
-    end
-
-    subgraph UI Engine
-        B1[Shadow DOM Host]
-        B2[Floating Badge View]
-        B3[Drawer Views & Tabs]
-        B4[Custom Tabs Engine]
-        B5[Auto Contrast Theme Helper]
-    end
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                          mobile-devtools                               │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+           ┌────────────────────────┼────────────────────────┐
+           ▼                        ▼                        ▼
+      Vanilla JS                  React                    Vue 3
+  (mobile-devtools)        (mobile-devtools/react)   (mobile-devtools/vue)
+           │                        │                        │
+           └────────────────────────┼────────────────────────┘
+                                    │
+                      ┌─────────────▼─────────────┐
+                      │   Native Shadow DOM Host  │
+                      │   <mobile-devtools-root>  │
+                      └─────────────┬─────────────┘
+                                    │
+            ┌───────────────────────┴───────────────────────┐
+            │                                               │
+┌───────────▼─────────────────┐   ┌─────────────────────────▼──────────────┐
+│      Core Interceptors      │   │               UI Engine                │
+├─────────────────────────────┤   ├────────────────────────────────────────┤
+│ • Console Interceptor       │   │ • Floating Badge View (floating-badge) │
+│ • Fetch / XHR Interceptor   │   │ • Drawer Views & Tabs (drawer)         │
+│ • DOM Elements Inspector    │   │ • Pluggable Custom Tabs (customTabs)   │
+│ • Storage Inspector         │   │ • Auto Contrast Theme Helper           │
+│ • DevTools Store & State    │   │ • Bug Exporter Engine                  │
+└─────────────────────────────┘   └────────────────────────────────────────┘
 ```
 
 ---
